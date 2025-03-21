@@ -1,0 +1,27 @@
+What's done:
+1. We have are generating the original state with adata generator with the following values
+    a. name: randomly generated
+    b. age : between 30-60 generated (but the game may last even 60 turns which means 5 years, as maximum, because maximum age considered here is 65)
+        b1. consideration: should change every year (all of them may have the same bday to uncomplicate things)
+    c. educational level: high school or lower, arbitur, bachelor, post graduate degree, randomly generated and weighted towards lower level
+    d. profession: low skilled, medium skileld or high skilled depending on education level, can also be unemployed at any of those levels
+    e. monthly income: determine by education level and age (it is fixed and can only be moved if the agent passes onto a new age)
+        e1. consideration: people might stop being unemployed, thats a change that we could consider here (*Also income can be made more flexible with Markov chains for future stages*)
+    f. number of dependets: randomly generated, maximum 4
+        f1. consideration: the number of dependents might change with a markov chain, but with very unlikely change (10% chance each year to increase the number of dependents), normally it should stay as it is
+        f2. can be argued that the lower educated may have more children, but not sure, also higher educated may have more children as they have more income
+    g. number of unpaid credits: completely randomly generated
+    h. generate expenditure: subject to income and number of dependents and has a random to be calculated, min 50% of income, max is 150% of income monthly
+        h1. we could probably introduce here Markov chains as well, instead of introducing them in the income, or maybe the otherway around
+
+##### Questions
+Should I generate the y-variable based on the x-variable in my generator or independent from it? Because that is key for further predictions?
+The function should be more developed
+
+What is still to be done:
+1. The play may have either 12 to 36 turns, in which each turn is a month
+    a. Given this, the income (change whenever they get into a new category of income --> can be determined by a Markov chain) and expenses (they can change each month)
+        a1. We could even make the mean income to meet a ceratin number, and also see how the mean income increases over time (or could make it also decrease for some individuals)
+    b. Because of this, PD, EAD and LGD should be recalculated every month
+    c. So we get a new Billanz each month
+    d. Also, the interest of the credits is monthly (re)calculated
