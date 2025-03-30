@@ -13,6 +13,10 @@ What's done:
     g. number of unpaid credits: completely randomly generated
     h. generate expenditure: subject to income and number of dependents and has a random to be calculated, min 50% of income, max is 150% of income monthly
         h1. we could probably introduce here Markov chains as well, instead of introducing them in the income, or maybe the otherway around
+    i. the credit request is a function of the income. We limit the amount of debt that someone can ask to be minimum 0.5 and maximum 2.0 times the yearly income
+        i1. this will change once it is more dynamic, because the income will change
+    j. credit to income ratio
+    k. debt to income ratio after credit: abs((savings_debt - credit)/monthly_income)
 
 ##### Questions
 Should I generate the y-variable based on the x-variable in my generator or independent from it? Because that is key for further predictions?
