@@ -38,3 +38,8 @@ What is still to be done:
 3. Expenditure should also be made more flexible to allow for reductions and increases.
 4. The number of dependents should also change (increase or decrease during periods)
 5. debt/income, if it exists it means that the person is spending much more than what he is getting
+
+
+We added:
+
+1. A training with Logisitic Regresion, Neuoronal Networks and Random Forests (maybe deleted later) to estimate the PD (probability of default)
