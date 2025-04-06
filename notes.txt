@@ -17,6 +17,10 @@ What's done:
         i1. this will change once it is more dynamic, because the income will change
     j. credit to income ratio
     k. debt to income ratio after credit: abs((savings_debt - credit)/monthly_income)
+2. A variable y is generated with 0s and 1s that, where 0 is non default and 1 is default. This is generated given the x-variables of the Bank.
+    This as we dont have real life data, therefore the x-variables are the info that the bank has to classify into be defaulting or non-defaulting
+    Only a bunch of x-variables are used to get the generate the y-variable, which are:
+    a. number of unpaid credits
 
 ##### Questions
 Should I generate the y-variable based on the x-variable in my generator or independent from it? Because that is key for further predictions?
@@ -29,3 +33,8 @@ What is still to be done:
     b. Because of this, PD, EAD and LGD should be recalculated every month
     c. So we get a new Billanz each month
     d. Also, the interest of the credits is monthly (re)calculated
+
+2. We need to make income more flexible, that people can move easily to gain more (or maybe also get unemployed given economic shocks)in future periods.
+3. Expenditure should also be made more flexible to allow for reductions and increases.
+4. The number of dependents should also change (increase or decrease during periods)
+5. debt/income, if it exists it means that the person is spending much more than what he is getting
