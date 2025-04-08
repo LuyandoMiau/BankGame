@@ -16,7 +16,11 @@ What's done:
     i. the credit request is a function of the income. We limit the amount of debt that someone can ask to be minimum 0.5 and maximum 2.0 times the yearly income
         i1. this will change once it is more dynamic, because the income will change
     j. credit to income ratio
-    k. debt to income ratio after credit: abs((savings_debt - credit)/monthly_income)
+    k. debt to income ratio after credit: abs((savings_debt - credit)/monthly_income), there is also 
+    l. savings-debt is also monthly income - monthly expenditure
+    m. debt_to_income_ratio_partial: abs(savings_debt/monthly_income)
+    n. 
+
 2. A variable y is generated with 0s and 1s that, where 0 is non default and 1 is default. This is generated given the x-variables of the Bank.
     This as we dont have real life data, therefore the x-variables are the info that the bank has to classify into be defaulting or non-defaulting
     Only a bunch of x-variables are used to get the generate the y-variable, which are:
@@ -43,3 +47,6 @@ What is still to be done:
 We added:
 
 1. A training with Logisitic Regresion, Neuoronal Networks and Random Forests (maybe deleted later) to estimate the PD (probability of default)
+
+Still to be done:
+We can do a montecarlo later, once we have the LGDs and EADs and the ultimate balance sheet
