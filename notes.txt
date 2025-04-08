@@ -19,7 +19,7 @@ What's done:
     k. debt to income ratio after credit: abs((savings_debt - credit)/monthly_income), there is also 
     l. savings-debt is also monthly income - monthly expenditure
     m. debt_to_income_ratio_partial: abs(savings_debt/monthly_income)
-    n. 
+    n. requested_loan_duration: dependent on the credit to income ratio ()
 
 2. A variable y is generated with 0s and 1s that, where 0 is non default and 1 is default. This is generated given the x-variables of the Bank.
     This as we dont have real life data, therefore the x-variables are the info that the bank has to classify into be defaulting or non-defaulting
