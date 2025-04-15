@@ -20,6 +20,8 @@ What's done:
     l. savings-debt is also monthly income - monthly expenditure
     m. debt_to_income_ratio_partial: abs(savings_debt/monthly_income)
     n. requested_loan_duration: dependent on the credit to income ratio ()
+    o. collateral: calacualted based on the profession and adding some randomness that some people may not have a collateral
+    p. estimated_seizable_assets: it is based on the monthly income, the savings, the profession and the collateral
 
 2. A variable y is generated with 0s and 1s that, where 0 is non default and 1 is default. This is generated given the x-variables of the Bank.
     This as we dont have real life data, therefore the x-variables are the info that the bank has to classify into be defaulting or non-defaulting
@@ -50,3 +52,8 @@ We added:
 
 Still to be done:
 We can do a montecarlo later, once we have the LGDs and EADs and the ultimate balance sheet
+
+
+Maybe we can also add a column, months being umeployed?
+
+We can add more randomness to the estimation of the seizable assets
