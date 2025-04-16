@@ -57,3 +57,10 @@ We can do a montecarlo later, once we have the LGDs and EADs and the ultimate ba
 Maybe we can also add a column, months being umeployed?
 
 We can add more randomness to the estimation of the seizable assets
+
+
+
+
+GIT COMMAND TO PUSH EVERYTHING INTO THE BRANCH:
+
+git push -u origin your-branch-name
