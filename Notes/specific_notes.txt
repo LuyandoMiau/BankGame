@@ -1,0 +1,51 @@
+So now, what I have is my dataframe df_R with a:
+
+PD_LR (from a logisitic regresion) with an accuracy of 0.64
+PD_NN (neuronal networks) with an final ephoc accuracy of 0.6762
+PD_RF (random forests) with an accuracy of 0.6150
+PD_LL (logistic LASSO) with a regularization strength of 0.01 and an accuracy of 0.64
+EAD
+LGD
+
+Now I am still missing calculation another thing for the bank right?
+
+Now, what I am considering is maybe to do a Montecarlo simulation to maybe run which of the models is better to estimating the PDs?
+
+Remember that now what i want is not to create a web tool in which, I dont know, i generate 1000 customers and 10 will be presented in the first round of the game. Some characteristics like the PDs, the income, their profession, their age, the amount of credit asked and the requested loan duration will be shown to the player and then they will decide:
+
+1. If they grant them or not the credit and if so
+2. what would be the monthly interest rate that they will be charging to them (maybe we can also estimate this in advance and give a suggestion of the interest rate to be charged)?
+
+In the game one month is one period, and the game may last till the bank bankrupts or till period 50, whatever happens first
+
+Then bank will start with some initial assets and liabilities, then after the round is passed. There will be recalculations:
+
+1. For the bank, it needs to put in its balance sheet the credits that they granted (automatically done)
+
+2. On the customer"s side may be subjected from a jump of state, so we have this variables:
+
+age ---> should change when 12 periods in the game have passed	
+number of not paid past credits	---> remains unchanged the whole game 
+dependents	---> may change (they may have children, get divorced, or get a the children got independent, this is also dependent on the age somehow)
+monthly income --> should change, like markov chains, moving from one state to another, but the major probability is that they will remain the same, maybe depending on their profession, we have a probability that the remain in the same state with same income, and another that they jump to a better salary and a lower one that they got unemployed (so their salary is reduced), the likelihood increases the more time it passes, for example from month to month it is unlikely that their situation changes, but from after some months the likelihood increases.
+monthly expenditure --> kinda same as 
+savings (debt)	--> calculates automatically as income minus expenditure, but it can accumulate
+debt-to-income ratio before credit --> recalculated every month (only if the credit was accepted by the bank)
+credit: monthly amount	--> remains unchanged the whole game
+credit-to-income ratio	 --> recalculated each month (only if the credit was accepted by the bank)
+requested_loan_duration --> should remain unchanged but if the person manages to pay the whole loan before or on time, then a new variable should be created signaling this as 1 as "credit payed?"	
+debt-to-income ratio after credit --> recalculated every month (only if the credit was accepted by the bank)
+collateral	--> also can change (the person may get a better income or inherit something)
+estimated seizable assets	--> recalculated each month
+y-categorical-default	--> fixed the whole game
+PD_LR	PD_NN --> recalculated each month (maybe we should run the Montecarlo just to actually decide on the best method to calculate this)
+PD_RF	--> recalculated each month (maybe we should run the Montecarlo just to actually decide on the best method to calculate this)
+PD_LL	--> recalculated each month (maybe we should run the Montecarlo just to actually decide on the best method to calculate this)
+EAD	--> recalculated each month
+LGD --> recalculated each month
+
+Remember that I will allow the customers to start paying after 6 months (so after 6 periods), if they dont pay, obviously the interest start to be charged on them and their debt gets accumulated.
+
+Obviously the player does not know if the person will default or not, but this will be done using y-categorical-default, whoever has a 0 will not be defaulting and will be normally paying (so we will make that the conditions move in his favor to actually pay the credit, but this will not happen all the time but most of the times), and whoever has a 1 then they will default (even if they have the money, so in the end we will need to claim the collateral, but not all of ti can be claimed instantly, and sometimes cannot be at all) but not all the time they will default, this will add randomness. 
+
+It is very ambitious project, but this project actually contains a lot fo my knowledge: finance, statistics, risk management, machine learning modeling, python programming, and I want also to include, html developing, java script coding, usage of docker desktop when possible and maybe sql as well?
