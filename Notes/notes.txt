@@ -64,3 +64,13 @@ We can add more randomness to the estimation of the seizable assets
 GIT COMMAND TO PUSH EVERYTHING INTO THE BRANCH:
 
 git push -u origin your-branch-name
+
+
+
+
+
+MY NEXT STEPS:
+
+1. Change for jupyter notebook to creating a file for the functions for the data generation, a file with the models, and a file for the data generation
+1.2 Save this datafile in a csv, the final data frame, maybe also to be checked with SQL
+2. Start building the transitions of the customers from one state to the oder for the variables that can transition
