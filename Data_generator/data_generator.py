@@ -88,12 +88,30 @@ def data_generator(number_of_customers):
 
 
 """ Generate the data for a specified number of customers """
+
+# INPUTS THAT CAN BE CHANGED ########################################################################################
 number_of_customers_1 = 1000
+saving_path_statistics = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data.csv'
+saving_path_models = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data_for_models.csv'
+#####################################################################################################################
+
+
+"""This df will be used to make statitical analysis in SQL with sqlite"""
+
+# Generate the data
 df_1 = data_generator(number_of_customers_1)
 
 # Save it to a CSV file
-saving_path = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data.csv'
-df_1.to_csv(saving_path, index=False)
+df_1.to_csv(saving_path_statistics, index=False)
+
+"""This df will be used to make the models"""
+
+# Convert categorical variables to numeric
+df_R = pd.get_dummies(df_1, columns=["educational level", "profession"], drop_first=True)
+
+# Save it to a CSV file
+df_R.to_csv(saving_path_models, index=False)
+
 
 
 
