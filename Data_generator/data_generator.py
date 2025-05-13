@@ -91,7 +91,7 @@ def data_generator(number_of_customers):
 
 # INPUTS THAT CAN BE CHANGED ########################################################################################
 number_of_customers_1 = 1000
-saving_path_statistics = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data.csv'
+saving_path_statistics = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data_for_queries.csv'
 saving_path_models = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data_for_models.csv'
 #####################################################################################################################
 

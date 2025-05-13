@@ -16,7 +16,7 @@ import pandas as pd
 
 # Get our data frame and save it to a SQL database
 df_SQL = pd.read_csv(saving_path_statistics) 
-conn = sqlite3.connect('/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/SQL_queries/Data/customers_data.db')                    
-df_SQL.to_sql('customers_data', conn, if_exists='replace', index=False) 
+conn = sqlite3.connect('/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/SQL_queries/Data/customers_data_for_queries.db')                    
+df_SQL.to_sql('customers_data_for_queries', conn, if_exists='replace', index=False) 
 conn.close()  
 

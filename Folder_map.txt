@@ -1,0 +1,50 @@
+/////////BANK GAME///////////
+
+(Files with a number* need to be run in the sequence of the numbers)
+
+Data_generator ---> To generate the data of the costumers
+    
+    Files inside:
+        functions_data_generator.py ---> Functions to generate the customer data, the X-variables
+        1* data_generator.py ---> Generates all the customer data using the functions_data_generator.py and returns two files one for queries and one for modelling.
+    
+    Folders inside:
+        
+        Generated_data ---> Here the data in .csv files is stored
+            Files inside:
+                customer_data_for_models.csv --> Used for the after modelling of the PD, LGD and EAD.
+                customer_data_for_queries.csv --> Used to create SQL queries with the data
+        
+        SQL_queries ---> Here the SQL queries are generated and saved
+            Files inside:
+                2* SQL_queries_Data.py --> This file is used to create the queries
+            
+            Folders inside:
+                Data ---> Here the SQL Data query is stored
+                    Files inside:
+                        customer_data_for_queries.db ---> Data file used to create SQL queries.
+
+JupyterNotebooks ---> Here JupyterNotebooks are stored to run code comfortable for some steps of the process
+
+    Files inside:
+        General_Run_1st-Version.ipynb ---> Here the original first Jupyter Notebook for reference
+
+PD_LGD_EAD_Modelling ---> Here all the folders and files to model the PDs, LGDs and EADs, that"s is to asses Credit Risk
+
+    Files inside:
+        3* DataEditingVariableSetup.py ---> This one uses our customer_data_for_models.csv to transform the data and define the Xs and y to be used to model PDs, LGDs, and EADs.
+
+    Folders inside:
+
+        EAD ---> Folder with the files to calculate the EAD
+
+        LGD ---> Folder with the files to calculate the LGD
+
+        PD ---> Foler with the files to calculate the PD
+            Files inside:
+                4* PD_models.py ---> Using the data from DataEditingVariableSetup.py calculates the PDs for each customer using different PD_models
+                5* PD_Montecarlo.py ---> Uses the models in PD_models.py to make a Montecarlo simulation, this in order to determine the model with the best prediction accuracy of the PDs.
+
+
+
+
