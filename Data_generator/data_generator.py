@@ -95,22 +95,30 @@ saving_path_statistics = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/D
 saving_path_models = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data_for_models.csv'
 #####################################################################################################################
 
+def main():
 
-"""This df will be used to make statitical analysis in SQL with sqlite"""
+    """This df will be used to make statitical analysis in SQL with sqlite"""
 
-# Generate the data
-df_1 = data_generator(number_of_customers_1)
+    # Generate the data
+    df_1 = data_generator(number_of_customers_1)
 
-# Save it to a CSV file
-df_1.to_csv(saving_path_statistics, index=False)
+    # Save it to a CSV file
+    df_1.to_csv(saving_path_statistics, index=False)
 
-"""This df will be used to make the models"""
+    """This df will be used to make the models"""
 
-# Convert categorical variables to numeric
-df_R = pd.get_dummies(df_1, columns=["educational level", "profession"], drop_first=True)
+    # Convert categorical variables to numeric
+    df_R = pd.get_dummies(df_1, columns=["educational level", "profession"], drop_first=True)
 
-# Save it to a CSV file
-df_R.to_csv(saving_path_models, index=False)
+    # Save it to a CSV file
+    df_R.to_csv(saving_path_models, index=False)
+    
+if __name__ == "__main__":
+    main()
+    # The main function is called when the script is run directly
+    # This allows the script to be used as a module in other scripts without executing the main function
+    # If the script is imported as a module, the main function will not be executed
+
 
 
 
