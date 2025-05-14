@@ -3,6 +3,7 @@ import os
 
 # Define the paths to the scripts in the order they need to run
 scripts = [
+    "Bank_BalanceSheet/Original_setup/BalanceSheet.py",
     "Data_generator/data_generator.py",
     "Data_generator/SQL_queries/SQL_queries_Data.py",
     "PD_LGD_EAD_Modelling/DataEditingVariableSetup.py"

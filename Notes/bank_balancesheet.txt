@@ -1,0 +1,16 @@
+So my simple bank works more or less like this:
+
+- People save money there (this side will not be visible by the player, but the amount can be altered by macroeconomic factors like economic shocks 
+    or the raise of the reference interest rate by the national central bank). So in the beginning we have a certain amount of money to lend as a bank. 
+    This money, let's say, maybe having 1,000,000 euro in the bank, is both an asset (potentially) and a liability, and asset because it can technically 
+    be used to be lend to people and a liability because it is the money of others so the bank owes money to these people, it is debt of the bank. 
+- We have two interest rates, savings rate and lending rates. In my game we will assume a standard saving rate, and the lending rate, will be 
+    determined given the score cards (and maybe other factors), but the lowest lending rate will be higher that the saving rate (because that is how 
+    banks fundamentally make money, from interest). 
+- Economic factors are present in the game, like the reference interest rate, if it moves, then I also move my saving interest rate 
+    (should be done automatically) and the lending rates should be also readjusted (we can leave to the player this readjustment). 
+    Also another thing is the minimum legal requirement called in Spanish "encaje legal", which is the minimum level of capital that the bank 
+    should keep, that is if it is 10%, 10% of 1,000,000 is 100,000, that cannot be lend and should be kept saved.
+- Economic shocks can happen in the game, not very elaborated, but maybe like a shock in which a lot of people starting taking their savings out 
+    of the bank, thus reducing the capital available of the bank, or vice versa. This should not be able for the player to interact, the shocks 
+    will just be displayed on the screen, but they will have an impact in the Balance sheet of the bank.
