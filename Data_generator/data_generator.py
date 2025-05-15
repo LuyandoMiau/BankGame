@@ -1,5 +1,5 @@
 """ File with the functions to generate the data with the customer profiles."""
-from functions_data_generator import generate_profession, generate_income_expense, generate_credit_requested, calculate_collateral, estimate_seizable_assets, generate_default_label
+from functions_data_generator import generate_profession, generate_working_sector, generate_income_expense, generate_credit_requested, calculate_collateral, estimate_seizable_assets, generate_default_label
 
 """Packages for data generation."""
 import pandas as pd
@@ -27,6 +27,8 @@ def data_generator(number_of_customers):
         ##### Variables directly dependent on other variables #####
         # Generate profession based on education level
         profession = generate_profession(education_level)
+        # Generate the working sector based on the profession
+        working_sector = generate_working_sector(profession)
         # Generate monthly income based on profession, age and number of dependents
         monthly_income = generate_income_expense(profession, age, dependents)[0]
         # Generate monthly expenditure dependening on the income, mean income and number of dependents
@@ -69,6 +71,7 @@ def data_generator(number_of_customers):
             'number of not paid past credits': past_credits, # independent
             'dependents': dependents, # independent
             'profession': profession, # depends on education
+            'working sector': working_sector, # depends on profession
             'monthly income': monthly_income, # depends on profession and age
             'monthly expenditure': monthly_expenditure, # depends on income, mean income per age and profession, and the number of dependents
             'savings (debt)': savings_debt, # monthly income - monthly expenditure
@@ -108,7 +111,7 @@ def main():
     """This df will be used to make the models"""
 
     # Convert categorical variables to numeric
-    df_R = pd.get_dummies(df_1, columns=["educational level", "profession"], drop_first=True)
+    df_R = pd.get_dummies(df_1, columns=["educational level", "profession", "working sector"], drop_first=True)
 
     # Save it to a CSV file
     df_R.to_csv(saving_path_models, index=False)
