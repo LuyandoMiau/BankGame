@@ -49,3 +49,8 @@ Remember that I will allow the customers to start paying after 6 months (so afte
 Obviously the player does not know if the person will default or not, but this will be done using y-categorical-default, whoever has a 0 will not be defaulting and will be normally paying (so we will make that the conditions move in his favor to actually pay the credit, but this will not happen all the time but most of the times), and whoever has a 1 then they will default (even if they have the money, so in the end we will need to claim the collateral, but not all of ti can be claimed instantly, and sometimes cannot be at all) but not all the time they will default, this will add randomness. 
 
 It is very ambitious project, but this project actually contains a lot fo my knowledge: finance, statistics, risk management, machine learning modeling, python programming, and I want also to include, html developing, java script coding, usage of docker desktop when possible and maybe sql as well?
+
+
+
+TO ADD:
+- Add an environment in gitHub that priorly installs the packages needed for the game so that the user does nto have to install them themselves.
