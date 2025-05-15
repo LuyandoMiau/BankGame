@@ -225,7 +225,7 @@ def estimate_seizable_assets(monthly_income, savings, profession, collateral):
 Note: This variable will be generated based on the profession, past credits, debt to income ratio before credit and credit to income ratio.
 Note 2: This is our y-variable and in the end we added some randomness to account for the error in the model."""
 
-def generate_default_label(profession, past_credits, debt_to_income_ratio_before_credit, credit_to_income_ratio):
+def generate_default_label(profession, sector, past_credits, debt_to_income_ratio_before_credit, credit_to_income_ratio):
     
     # This simulates a default label (0/1) based on financial risk factors.
     # What we will use will be the:
@@ -237,7 +237,29 @@ def generate_default_label(profession, past_credits, debt_to_income_ratio_before
         "Unemployed_MediumSkilled": {"base": 0.12, "weights": (0.30, 0.5, 0.3)}, # base probability of default and weights (past credits, debt to income before credit, credit to income)
         "MediumSkilled":            {"base": 0.05, "weights": (0.20, 0.45, 0.25)}, # base probability of default and weights (past credits, debt to income before credit, credit to income)
         "Unemployed_HighSkilled":   {"base": 0.09, "weights": (0.30, 0.45, 0.25)}, # base probability of default and weights (past credits, debt to income before credit, credit to income)
-        "HighSkilled":              {"base": 0.2,  "weights": (0.20, 0.4, 0.2)}, # base probability of default and weights (past credits, debt to income before credit, credit to income)
+        "HighSkilled":              {"base": 0.02,  "weights": (0.20, 0.4, 0.2)}, # base probability of default and weights (past credits, debt to income before credit, credit to income)
+    }
+    
+    # Sector-level risk modifiers
+    sector_risk_modifier = {
+        # LowSkilled sectors tend to have a positive risk premium
+        "Construction": 0.03,
+        "Agriculture": 0.02,
+        "Manufacturing": 0.01,
+        "Transportation": 0.025,
+        "Cleaning Services": 0.04,
+        # MediumSkilled sectors tend to have a neutral risk premium
+        "Nursing": -0.01,
+        "Teacher": -0.015,
+        "IT Support": 0.0,
+        "Electrician": 0.01,
+        "Artist": 0.03,
+        # HighSkilled sectors tend to have a negative risk premium
+        "Finance": -0.02,
+        "Engineering": -0.015,
+        "Research": -0.01,
+        "Consultant": 0.0,
+        "Doctor": -0.025,
     }
 
     # setting variable is set to retrieve the element of risk_settings for the profession given
@@ -246,6 +268,9 @@ def generate_default_label(profession, past_credits, debt_to_income_ratio_before
     if not settings:
         raise ValueError(f"Unknown profession: {profession}")
     
+    # Get sector risk modifier
+    sector_modifier = sector_risk_modifier.get(sector, 0)  # Default to 0 if unknown sector
+    
     # Defining the weigths for the calcualtion of the probability of default
     w1, w2, w3 = settings["weights"]
     # Defining the base probability of default
@@ -253,10 +278,16 @@ def generate_default_label(profession, past_credits, debt_to_income_ratio_before
 
     # Calculating the risk factor with the weigths
     risk_factor = past_credits * w1 + debt_to_income_ratio_before_credit * w2 + credit_to_income_ratio * w3
-    # Defining the default probability
-    default_probability = min(1, base + risk_factor)
+    
+    # Add small random noise to simulate real-world unpredictability in default behavior
+    # This makes the dataset more realistic and prevents deterministic labels for identical inputs
+    noise = random.uniform(-0.1, 0.1)
+    
+    # Final default probability includes profession risk, sector modifier, and added noise
+    default_probability = min(1, max(0, base + risk_factor + sector_modifier + noise))
 
     # We want a non-deterministic y-categorical variable that will make that same profiles will not always lead to the same result
-    # So even if two people may fall on the same profile, maybe they will not default
+    # So even if two people may fall on the same profile, maybe they will not have the same default label
     # return 1 if random.random() < default_probability else 0
     return int(random.random() < default_probability)
+# that means that if 1 is returned, the person will default, if 0 is returned, the person will not default

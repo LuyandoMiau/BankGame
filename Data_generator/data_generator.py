@@ -62,7 +62,7 @@ def data_generator(number_of_customers):
         estimated_seizable_assets = estimate_seizable_assets(monthly_income, savings_debt, profession, collateral)
         
         # ---------------- Y-Variable --------------------------------#
-        default_not_default = generate_default_label(profession, past_credits, debt_to_income_ratio_partial, credit_to_income_ratio)
+        default_not_default = generate_default_label(profession, working_sector, past_credits, debt_to_income_ratio_partial, credit_to_income_ratio)
         
         data.append({
             'name': name, # independent
