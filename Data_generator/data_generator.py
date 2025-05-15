@@ -110,7 +110,7 @@ def main():
 
     """This df will be used to make the models"""
 
-    # Convert categorical variables to numeric
+    # Convert categorical variables to numeric binary variables
     df_R = pd.get_dummies(df_1, columns=["educational level", "profession", "working sector"], drop_first=True)
 
     # Save it to a CSV file
