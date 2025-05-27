@@ -165,7 +165,7 @@ def generate_credit_requested(income): ### It will depend on the income
     # Calculate the percentage of the credit requested over the monthly income
     percentage_credit_month_income = credit_requested_monthly/income
     # Return the values
-    return credit_term_months, credit_requested, percentage_credit_month_income
+    return credit_term_months, credit_requested, credit_requested_monthly, percentage_credit_month_income
 
 
 """Generate the collateral value.

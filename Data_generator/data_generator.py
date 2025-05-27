@@ -46,12 +46,12 @@ def data_generator(number_of_customers):
             debt_to_income_ratio_partial = 0
         
         # ---------------- Credit amount requested and time of the request--------------------------------#
-        credit_term_months = generate_credit_requested(monthly_income)[0]
-        monthly_credit = generate_credit_requested(monthly_income)[1]
-        credit_to_income_ratio = generate_credit_requested(monthly_income)[2]
+        credit_term_months = generate_credit_requested(monthly_income)[0] # credit_term_months
+        monthly_credit = generate_credit_requested(monthly_income)[2] # credit_requested_monthly
+        credit_to_income_ratio = generate_credit_requested(monthly_income)[3] # percentage_credit_month_income
         
         # calculating the monthly debt if the monthluy credit is issued
-        debt_after_credit = savings_debt - monthly_credit
+        debt_after_credit = savings_debt - monthly_credit # This is the debt after the credit is issued but only as a monthly amount
         if debt_after_credit > 0: # if still the monthly savings are higher than the credit, then the total debt to incom ratio should be zero
             debt_to_income_ratio_total = 0
         else: 
