@@ -49,6 +49,7 @@ def data_generator(number_of_customers):
         credit_term_months = generate_credit_requested(monthly_income)[0] # credit_term_months
         monthly_credit = generate_credit_requested(monthly_income)[2] # credit_requested_monthly
         credit_to_income_ratio = generate_credit_requested(monthly_income)[3] # percentage_credit_month_income
+        type_of_credit = generate_credit_requested(monthly_income)[4] # type of credit
         
         # calculating the monthly debt if the monthluy credit is issued
         debt_after_credit = savings_debt - monthly_credit # This is the debt after the credit is issued but only as a monthly amount
@@ -78,6 +79,7 @@ def data_generator(number_of_customers):
             'debt-to-income ratio before credit': debt_to_income_ratio_partial, # abs(savings_debt/monthly_income)
             'credit: monthly amount': monthly_credit, # depends on the income
             'credit-to-income ratio': credit_to_income_ratio, # credit/income
+            'type of credit': type_of_credit, # depends on the income
             'requested_loan_duration': credit_term_months, # depends on the credit-to-income ratio
             'debt-to-income ratio after credit': debt_to_income_ratio_total, # abs((savings_debt - credit)/monthly_income)
             'collateral': collateral, # depends on the profession
@@ -111,7 +113,7 @@ def main():
     """This df will be used to make the models"""
 
     # Convert categorical variables to numeric binary variables
-    df_R = pd.get_dummies(df_1, columns=["educational level", "profession", "working sector"], drop_first=True)
+    df_R = pd.get_dummies(df_1, columns=["educational level", "profession", "working sector", "type of credit"], drop_first=True)
 
     # Save it to a CSV file
     df_R.to_csv(saving_path_models, index=False)
