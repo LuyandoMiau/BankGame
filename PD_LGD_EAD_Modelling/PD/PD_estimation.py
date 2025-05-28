@@ -71,7 +71,7 @@ def monte_carlo_logistic_regression(X_train_scaled, y_train, X_test_scaled, X_sc
     average_coefficients (ndarray): Average coefficients of the logistic regression model across iterations.
     average_brier_score_loss (float): Average Brier score loss across iterations.
     average_log_loss (float): Average log loss across iterations.
-    average_accuracy_score (float): Average accuracy score across iterations.
+    average_roc_auc (float): Average ROC AUC score across iterations.
     """
     # MEASURES OF ACCURACY ----------------------------------------------------------------------
     
