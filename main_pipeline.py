@@ -8,7 +8,6 @@ scripts = [
     "Data_generator/SQL_queries/SQL_queries_Data.py",
     "PD_LGD_EAD_Modelling/DataEditingVariableSetup.py",
     "PD_LGD_EAD_Modelling/PD/PD_estimation.py"
-    #"PD_LGD_EAD_Modelling/PD/PD_Montecarlo.py"   # Tranform the file first to maybe add if __name__ == "__main__":, check the correct simulation
 ]
 
 # Run each script
