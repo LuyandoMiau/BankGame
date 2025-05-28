@@ -33,8 +33,13 @@ def main():
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     
+    """ Let"s also rescale our X variable"""
+    
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+    
     # Return these variables to be used in the next steps
-    return X_train, X_test, X_train_scaled, X_test_scaled, y_train, y_test
+    return X_train, X_test, X_train_scaled, X_test_scaled, y_train, y_test, X_scaled
 
 if __name__ == "__main__":
     main()
