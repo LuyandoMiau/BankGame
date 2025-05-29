@@ -417,9 +417,8 @@ def main(
     scores_df.columns = ["Model", "Brier Score", "Log Loss", "ROC AUC"]
     scores_df.set_index("Model", inplace=True)
     
-    # Print the scores DataFrame
-    print("\nScores DataFrame:")
-    print(scores_df)
+    # Return outputs
+    return PD_df, coef_dict, scores_df
 
 if __name__ == "__main__":
     main()

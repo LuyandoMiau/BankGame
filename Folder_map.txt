@@ -12,13 +12,18 @@ Folders inside:
 
     Bank_BalanceSheet ---> To generate the original Balance Sheet and Manage the Dynamics during the Game
 
-        Folders inside
+        Folders inside:
+
+            Original_setup ---> original balance sheet of the Bank_BalanceSheet
+
+                Files inside:
+                    1* BalanceSheet.py ---> Contains the original set up of assets and liabilities of the bank
 
     Data_generator ---> To generate the data of the costumers
         
         Files inside:
             functions_data_generator.py ---> Functions to generate the customer data, the X-variables
-            1* data_generator.py ---> Generates all the customer data using the functions_data_generator.py and returns two files one for queries and one for modelling.
+            2* data_generator.py ---> Generates all the customer data using the functions_data_generator.py and returns two files one for queries and one for modelling.
         
         Folders inside:
             
@@ -29,7 +34,7 @@ Folders inside:
             
             SQL_queries ---> Here the SQL queries are generated and saved
                 Files inside:
-                    2* SQL_queries_Data.py --> This file is used to create the queries
+                    3* SQL_queries_Data.py --> This file is used to create the queries
                 
                 Folders inside:
                     Data ---> Here the SQL Data query is stored
@@ -44,7 +49,7 @@ Folders inside:
     PD_LGD_EAD_Modelling ---> Here all the folders and files to model the PDs, LGDs and EADs, that"s is to asses Credit Risk
 
         Files inside:
-            3* DataEditingVariableSetup.py ---> This one uses our customer_data_for_models.csv to transform the data and define the Xs and y to be used to model PDs, LGDs, and EADs.
+            4* DataEditingVariableSetup.py ---> This one uses our customer_data_for_models.csv to transform the data and define the Xs and y to be used to model PDs, LGDs, and EADs.
 
         Folders inside:
 
@@ -54,8 +59,9 @@ Folders inside:
 
             PD ---> Foler with the files to calculate the PD
                 Files inside:
-                    4* PD_models.py ---> Using the data from DataEditingVariableSetup.py calculates the PDs for each customer using different PD_models
-                    5* PD_Montecarlo.py ---> Uses the models in PD_models.py to make a Montecarlo simulation, this in order to determine the model with the best prediction accuracy of the PDs.
+                    PD_estimation.py ---> In this file using the Data from DataEditingVariableSetup.py the PDs are estimates using Logisitic Regresion, Neuronal Networks and Random Forests + a Monte Carlo simulation with bootstrap replacement of the data is run to check for scores of the perfomrance of each model 
+                    5* Gaussian_factor_copula.py ---> Calls the main function of PD_estimation.py, in this file we introduce a Gaussian factor copula model to estimate the joint default behavior of the customers
+
 
 
 
