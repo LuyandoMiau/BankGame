@@ -318,7 +318,7 @@ def main(
     third_layer_activation_function='sigmoid', # Activation function for the output layer of the neural network
     n_estimators=100, # Number of trees in the random forest model
     random_state=42, # Random state for reproducibility
-    iterations=100 # 500 iterations for Monte Carlo simulation
+    iterations=50 # 500 iterations for Monte Carlo simulation
 ):
     # Packages
     import sys
