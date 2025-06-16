@@ -57,6 +57,15 @@ Folders inside:
 
             LGD ---> Folder with the files to calculate the LGD
 
+            Files inside:
+                LGD_estimation.py ---> In this file the original LGDs for the beginning of the game are calculated, without using any models
+
+            Folders inside:
+
+                Performing ---> In this folder the performing LGDs will be calculated throughout the game
+
+                In-Default ---> In this folder the In-Default LGDs will be calculated throughout the game
+
             PD ---> Foler with the files to calculate the PD
                 Files inside:
                     PD_estimation.py ---> In this file using the Data from DataEditingVariableSetup.py the PDs are estimates using Logisitic Regresion, Neuronal Networks and Random Forests + a Monte Carlo simulation with bootstrap replacement of the data is run to check for scores of the perfomrance of each model 

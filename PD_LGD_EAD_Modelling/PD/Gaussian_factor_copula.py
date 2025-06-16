@@ -59,282 +59,293 @@ for model in ['LR', 'NN', 'RF']:
     combined_data[f"default_threshold_{model}"] = norm.ppf(combined_data[f"PD_{model}"].clip(1e-5, 1 - 1e-5))
 
 
-""" THIRD STEP:
-Define the Factor Copula Structure. 
-Fi is the common factor for the ith variable, and it is assumed to be normally distributed.
-p: is the sensitivity of the ith variable to the common factor Fi.
+""" THIRD STEP: REVIEWED!
+This step us aiming for a hierarchical Gaussian factor copula, where:
+- Working sector and credit type define categorical risk groups, with latent group-level risk factors.
+- A macroeconomic factor affects all borrowers, with borrower-specific sensitivity.
+- Each borrower has idiosyncratic risk as well.
 
-We will have three common factors: working sector, credit type and macroeconomic factor.
-1. The working sector factor and the credit type factor are columns in the combined data DataFrame.
-2. The macroeconomic factor is a random variable that we will be generated from a normal distribution.
-Therefore working sector and credit type will have impacts on the PDs of each specific group, 
-while the macroeconomic factor will have a global impact on all PDs.
+To implement this, we will:
+ 1. Treat working sector and credit type as discrete latent group-level factors — i.e., each category (e.g., sector=Retail) 
+    has a group-specific latent factor that is shared among all borrowers in that group.
+ 2. Introduce a global macroeconomic factor that is shared by everyone.
+ 3. Each borrower has a personalized sensitivity to the macro factor.
+ Default threshold:
 
-The relationship between the common factors and the latent thresholds is given by the following equation:
-# default_threshold_i = sqr(p) * F_i + sqr(1 -p) * e_i
-# where e_i is a random variable that is normally distributed with mean 0 and standard deviation 1.
+𝑍𝑖 = sqrt(𝜌macro) ⋅ 𝐹macro + sqrt(𝜌group) ⋅ 𝐹group(i) + sqrt(1 − 𝜌macro − 𝜌group) ⋅ 𝜖𝑖
+
+where:
+- 𝑍𝑖 is the latent variable for borrower i
+- 𝐹macro is the macroeconomic factor
+- 𝐹group(i) is the group-level factor for borrower i
+- 𝜖𝑖 is the idiosyncratic risk for borrower i
+- 𝜌macro is the weight for the macroeconomic factor
+- 𝜌group is the weight for the group-level factors
+
+Assumptions:
+- The macroeconomic factor is shared by all borrowers and has a weight of 𝜌macro.
+- Each group (working sector and type of credit) has its own latent factor with weight 𝜌group.
+- Each borrower has idiosyncratic risk represented by 𝜖𝑖.
+- The total weight of the macro and group factors must be less than 1, i.e., 𝜌macro + 𝜌group < 1.
+- The idiosyncratic risk 𝜖𝑖 is assumed to be normally distributed with mean 0 and variance 1.
 """
 
-# With our combined data, we will define the common factors and the sensitivity parameters.
-# Define the common factors
-def generate_common_factors(data, n_samples=1000):
+def simulate_default_indicators_grouped(default_thresholds, data, n_sim=1000,
+                                        rho_macro=0.1, rho_group=0.2):
     """
-    Generate common factors for the Gaussian factor copula model.
-    
-    Parameters:
-    - data: DataFrame containing the combined data with PDs.
-    - n_samples: Number of samples to generate for the common factors.
-    
-    Returns:
-    - common_factors: DataFrame with common factors.
-    """
-    # Generate a random macroeconomic factor that is normally distributed
-    macroeconomic_factor = np.random.normal(0, 1, n_samples)
-    
-    # Extract working sector and credit type as categorical variables
-    working_sector = pd.get_dummies(data['working sector'], drop_first=True).values
-    credit_type = pd.get_dummies(data['type of credit'], drop_first=True).values
-    
-    # Combine all factors into a single DataFrame
-    # The macroeconomic factor will be reshaped to match the number of samples, that menas it will be a column vector
-    common_factors = np.hstack((working_sector, credit_type, macroeconomic_factor.reshape(-1, 1)))
-    
-    return common_factors
+    Simulate default indicators using a Gaussian factor copula model with group-level and macroeconomic factors.
 
-# Generate common factors from the combined data
-common_factors = generate_common_factors(combined_data, n_samples=len(combined_data))
-
-
-# Define the sensitivity parameter to the common and macroeconomic factors
-def generate_sensitivity_parameters(n_factors, n_samples=1000):
-    """
-    Generate sensitivity parameters for the common factors.
-
-    Parameters:
-        n_factors (int): Number of common factors.
-        n_samples (int, optional): Number of samples to generate. Defaults to 1000.
-
-    Returns:
-        _type_: _description_
-    """
-    sensitivity_params = np.random.uniform(0, 1, (n_samples, n_factors))
-    
-    # Scale each borrower's sensitivity vector so that the sum is less than 1
-    row_sums = np.sum(sensitivity_params, axis=1, keepdims=True)
-    
-    # Clip row sums to avoid division by zero and scale to something < 1
-    row_sums = np.clip(row_sums, 1e-8, None)
-    scaling_factor = 0.9 / row_sums  # scale so that sum < 1
-    
-    # Scale the sensitivity parameters
-    sensitivity_params = sensitivity_params * scaling_factor
-    
-    return sensitivity_params
-
-
-# Generate sensitivity parameters for the common factors
-sensitivity_params = generate_sensitivity_parameters(n_factors=common_factors.shape[1], n_samples=len(combined_data))
-
-""" FOURTH STEP:
-Simulate defaults using the Gaussian factor copula model.
-The simulation will be based on the common factors, sensitivity parameters, and the latent thresholds defined earlier.
-In the end we will have a default matrix that indicates whether each borrower defaults or not based on the simulated common factors and sensitivity parameters. 
-How to interpret the default matrix?
-The default matrix will have a shape of (n_simulations, n_borrowers), where each row corresponds to a simulation and each column corresponds to a borrower.
-"""
-
-def simulate_default_indicators(default_thresholds, common_factors, sensitivity_params, n_sim=1000):
-    """
-    Simulate default indicators using Gaussian factor copula.
-    
     Parameters:
     - default_thresholds: np.array of norm.ppf(PD)
-    - common_factors: np.array (n_borrowers, n_factors)
-    - sensitivity_params: np.array (n_borrowers, n_factors)
+    - data: DataFrame with 'working sector' and 'type of credit'
     - n_sim: number of Monte Carlo simulations
+    - rho_macro: weight for macroeconomic factor
+    - rho_group: weight for group-level factors
 
     Returns:
     - default_matrix: (n_sim, n_borrowers) array of 0/1 default outcomes
-    What is a default_matrix?
-    - Each row corresponds to a simulation, and each column corresponds to a borrower.
-    - A value of 1 indicates a default, and 0 indicates no default.
     """
-    n_borrowers, n_factors = common_factors.shape
+    # Ensure the weights are valid
+    assert (rho_macro + rho_group) < 1.0, "Total systemic weight must be less than 1"
+    # Initialize the default matrix
+    n_borrowers = len(data)
     default_matrix = np.zeros((n_sim, n_borrowers))
 
+    # Define unique group combinations of working sector and type of credit (later on we can make it for each group and not as a combination)
+    data['group_key'] = data['working sector'].astype(str) + "_" + data['type of credit'].astype(str)
+    unique_groups = data['group_key'].unique()
+    group_to_index = {g: i for i, g in enumerate(unique_groups)}
+    borrower_groups = data['group_key'].map(group_to_index).values
+    n_groups = len(unique_groups)
+
+    # Precompute square roots for the weights of the equation
+    sqrt_rho_macro = np.sqrt(rho_macro)
+    sqrt_rho_group = np.sqrt(rho_group)
+    sqrt_residual = np.sqrt(1 - rho_macro - rho_group)
+
     for sim in range(n_sim):
-        # Simulate one common macro shock per sim (shared across borrowers)
-        F = np.random.normal(0, 1, size=n_factors)  # systemic factors
-        eps = np.random.normal(0, 1, size=n_borrowers)  # idiosyncratic
-        
-        Z = np.sum(np.sqrt(sensitivity_params) * F, axis=1) + \
-            np.sqrt(1 - np.sum(sensitivity_params, axis=1)) * eps
-        
+        # One macro factor per simulation
+        F_macro = np.random.normal()
+
+        # One latent factor per group
+        F_group = np.random.normal(size=n_groups)
+
+        # One idiosyncratic per borrower
+        eps = np.random.normal(size=n_borrowers)
+
+        # Map group-level factor to each borrower
+        F_group_per_borrower = F_group[borrower_groups]
+
+        # Combine all factors
+        Z = sqrt_rho_macro * F_macro + sqrt_rho_group * F_group_per_borrower + sqrt_residual * eps
+
+        # Apply thresholds
         default_matrix[sim] = (Z < default_thresholds).astype(int)
-        
+
     return default_matrix
 
-# Let"s get the default matrix for each model
-default_thresholds_LR = combined_data["default_threshold_LR"].values
-default_thresholds_NN = combined_data["default_threshold_NN"].values 
-default_thresholds_RF = combined_data["default_threshold_RF"].values
-# Simulate defaults for each model
-default_matrix_LR = simulate_default_indicators(default_thresholds_LR, common_factors, sensitivity_params)
-default_matrix_NN = simulate_default_indicators(default_thresholds_NN, common_factors, sensitivity_params)
-default_matrix_RF = simulate_default_indicators(default_thresholds_RF, common_factors, sensitivity_params)   
+# Prepare default thresholds for each model
+default_thresholds_dict = {
+    model: combined_data[f"default_threshold_{model}"].values
+    for model in ['LR', 'NN', 'RF']
+}
 
-"""FIFTH STEP:
-Simulate Portoflio Losses
-In this step, we will simulate the portfolio losses based on the default indicators generated in the previous step.
-For now we will assume LGD=1 and EAD=1, so the loss will be equal to the default indicator.
+# Simulate defaults for each model efficiently in a loop
+default_matrix_dict = {}
+for model, thresholds in default_thresholds_dict.items():
+    default_matrix_dict[model] = simulate_default_indicators_grouped(thresholds, combined_data)
+
+# Unpack results for later use
+default_matrix_LR = default_matrix_dict['LR']
+default_matrix_NN = default_matrix_dict['NN']
+default_matrix_RF = default_matrix_dict['RF']
+
+
 """
-for default_matrix in [default_matrix_LR, default_matrix_NN, default_matrix_RF]:
-    # Assuming LGD=1 and EAD=1 for simplicity
-    # The loss for each borrower is equal to the default indicator
-    # This means if a borrower defaults, the loss is 1, otherwise it is 0
-    # We will sum the losses across all borrowers to get the total portfolio loss for each simulation
-    # We will create a dictionary to store the losses for each model
-    losses = {
-        'LR losses': np.sum(default_matrix_LR, axis=1),
-        'NN losses': np.sum(default_matrix_NN, axis=1),
-        'RF losses': np.sum(default_matrix_RF, axis=1)
-    } 
-
-# Convert the losses dictionary to a DataFrame for better visualization
-losses_df = pd.DataFrame(losses)
-
-""" SIXTH STEP: 
-Compute capital requirements based on the simulated losses.
-In this step, we will compute the capital requirements based on the simulated losses.
-The capital requirement is typically calculated as the expected loss (EL) plus a multiple of the unexpected loss (UL).
+In the end the default matrices represent the simulated default indicators for each borrower across multiple simulations.
+Each row corresponds to a simulation, and each column corresponds to a borrower.
+The values are 0 or 1, where 1 indicates a default in that simulation for that borrower.
+Why are they useful?
+The default matrices are useful for understanding the risk profile of the portfolio, estimating joint default probabilities,
+and calculating capital requirements based on the simulated defaults. They allow us to analyze the impact of different factors on default probabilities and assess the overall risk exposure of the portfolio.
 """
 
-def compute_capital_requirements(losses_df, confidence_level=0.99):
+# Lets visualize the default matrices for each model but in a sensitive way so that we can understand what is happening
+# We will not plot them, because it is very diffuse, but we will print some statistics about the default matrices
+def print_default_matrix_stats(default_matrix, model_name):
     """
-    Compute capital requirements based on simulated losses.
-    
-    Parameters:
-    - losses_df: DataFrame containing simulated losses for each model.
-    - confidence_level: Confidence level for calculating unexpected loss (UL).
-    
-    Returns:
-    - capital_requirements: DataFrame with capital requirements for each model.
-    """
-    # Calculate expected loss (EL) as the mean of the losses
-    expected_loss = losses_df.mean()
-    
-    # Calculate unexpected loss (UL) as the quantile at the specified confidence level
-    unexpected_loss = losses_df.quantile(confidence_level)
-    
-    print(f"Expected Loss: {expected_loss}")
-    print(f"Unexpected Loss: {unexpected_loss}")
-    
-# Compute capital requirements for the simulated losses
-capital_requirements = compute_capital_requirements(losses_df)
-
-""" SEVENTH STEP:
-Estimate the capital per borrower using the IRB approach.
-The IRB (Internal Ratings-Based) approach is a method used by banks to calculate regulatory capital requirements for credit risk.
-The IRB formula is given by:
-    Ki = LGDi * normal_cdf((normal_ppf(PDi) + sqrt(rho) * normal_ppf(0.999))/sqrt(1 - rho)) - PDi * LGDi
-where:
-- Ki is the capital requirement for borrower i
-- LGDi is the loss given default for borrower i
-- PDi is the probability of default for borrower i
-- rho is the correlation parameter (assumed to be 0.15 for this example)   
-- normal_cdf is the cumulative distribution function of the standard normal distribution    
-- normal_ppf is the percent-point function (inverse of CDF) of the standard normal distribution
-- 0.999 is the confidence level for the unexpected loss calculation which is typically used in the IRB approach
-"""
-
-def irb_capital_per_borrower(PD, LGD, rho):
-    q = norm.ppf(0.999)
-    pd_term = norm.ppf(PD)
-    capital = LGD * norm.cdf((pd_term + np.sqrt(rho) * q) / np.sqrt(1 - rho)) - PD * LGD
-    return capital
-
-# Let's apply it and compute the capital per borrower for each model and save the results as an extra column of combined_data DataFrame
-rho = 0.15  # Correlation parameter
-LGD_value = 1 # Assuming LGD is 1 for simplicity, can be adjusted later
-
-# Add one extra column per model to the combined_data DataFrame for IRB capital
-for model in ['LR', 'NN', 'RF']:
-    combined_data[f"IRB_Capital_{model}"] = irb_capital_per_borrower(
-        PD=combined_data[f"PD_{model}"].values,
-        LGD=LGD_value,
-        rho=rho 
-    )
-    
-"""EIGHTH STEP:
-We will added the losses for each model to the combined_data DataFrame.
-We will also eliminate the default thresholds columns as they are not needed anymore.
-"""
-    
-# Before saving the combined data, we will also add the losses for each model to the combined_data DataFrame
-for model in ['LR', 'NN', 'RF']:
-    combined_data[f"Losses_{model}"] = losses_df[f"{model} losses"].values
-    
-# We will also eliminate the default thresholds columns as they are not needed anymore
-combined_data.drop(columns=["default_threshold_LR", "default_threshold_NN", "default_threshold_RF"], inplace=True)
-    
-
-"""NINTH STEP:
-Estimate Joint Default Probabilities
-In this step, we will estimate the joint default probabilities using the Gaussian factor copula model.
-
-Some questions to consider:
-
-    1. What are joint default probabilities?
-    Joint default probabilities refer to the likelihood of multiple borrowers defaulting simultaneously. They are crucial for understanding the risk exposure of a portfolio, as they capture the correlation between defaults across different borrowers. Estimating these probabilities helps in assessing the overall risk and making informed decisions regarding capital allocation and risk management.
-
-    2. Why do we need to estimate joint default probabilities?
-    Joint default probabilities are essential for understanding the likelihood of multiple borrowers defaulting simultaneously, which is crucial for risk management and capital allocation in a portfolio of loans. By estimating these probabilities, we can better assess the overall risk exposure and make informed decisions regarding capital requirements and risk mitigation strategies.
-
-    3. How do joint default probabilities relate to the Gaussian factor copula model?
-    The Gaussian factor copula model captures the dependence structure between the default probabilities of different borrowers. By simulating defaults based on common factors and sensitivity parameters, we can estimate the joint default probabilities as the mean of the simulated default matrix across multiple simulations. This allows us to account for the correlation between borrowers' defaults and provides a more accurate representation of the portfolio's risk profile.
-
-    4. How to interpret the joint default probabilities?
-    Joint default probabilities are interpreted as the likelihood of multiple borrowers defaulting simultaneously. A higher joint default probability indicates a greater risk of simultaneous defaults, while a lower probability suggests a more stable portfolio. These probabilities can be used to assess the overall risk exposure of the portfolio and inform capital allocation decisions.
-
-    5. Are joint default probabilities different from marginal default probabilities?
-    Yes, joint default probabilities differ from marginal default probabilities. Marginal default probabilities refer to the likelihood of an individual borrower defaulting, while joint default probabilities consider the simultaneous defaults of multiple borrowers. The Gaussian factor copula model allows us to estimate these joint probabilities by capturing the dependence structure between borrowers' defaults, which is not reflected in marginal probabilities alone.
-
-    6. Do differen borrowers have different joint default probabilities?
-    Yes, different borrowers can have different joint default probabilities based on their individual characteristics, such as credit scores, industry sectors, and other risk factors. The Gaussian factor copula model captures these differences by incorporating borrower-specific information and the common factors that influence defaults across the portfolio. As a result, the joint default probabilities will vary for each borrower depending on their unique risk profile and the overall portfolio dynamics.
-
-    7. Do different borrorwers share the same joint default probabilities?
-    Yes, different borrowers can share the same joint default probabilities if they are influenced by the same common factors and sensitivity parameters in the Gaussian factor copula model. However, the joint default probabilities can also vary among borrowers based on their individual characteristics and the specific common factors that affect them. The model captures both shared and unique influences on defaults, allowing for a nuanced understanding of joint default probabilities across the portfolio.
-"""
-
-def estimate_joint_default_probabilities(default_matrix, n_simulations=1000):
-    """
-    Estimate joint default probabilities from the simulated default matrix.
+    Print statistics about the default matrix for a given model.
     
     Parameters:
     - default_matrix: np.array of shape (n_simulations, n_borrowers)
-    
-    Returns:
-    - joint_default_probabilities: np.array of shape (n_borrowers,) with estimated joint default probabilities
+    - model_name: name of the model (e.g., 'LR', 'NN', 'RF')
     """
-    # Calculate the joint default probabilities as the mean of the default matrix across simulations
-    joint_default_probabilities = np.mean(default_matrix, axis=0)
+    print(f"Statistics for {model_name} Default Matrix:")
+    print(f"Shape: {default_matrix.shape}")
+    print(f"Total Defaults (sum across simulations): {np.sum(default_matrix)}")
+    print(f"Mean Defaults per Borrower: {np.mean(np.sum(default_matrix, axis=0))}")
+    print(f"Default Rate (mean across simulations): {np.mean(default_matrix)}")
+    print("-" * 40)
+# Print statistics for each model's default matrix
+print_default_matrix_stats(default_matrix_LR, 'Logistic Regression (LR)')
+print_default_matrix_stats(default_matrix_NN, 'Neural Network (NN)')
+print_default_matrix_stats(default_matrix_RF, 'Random Forest (RF)')
+
+
+# """FOURTH STEP: HERE IS WHERE WE NEED TO ADD OUR LGD simulation values and the EAD values (which will be the exposure values).
+# Simulate Portfolio Losses
+# In this step, we will simulate the portfolio losses based on the default indicators generated in the previous step.
+# For now we will assume LGD=1 and EAD=1, so the loss will be equal to the default indicator.
+# """
+# for default_matrix in [default_matrix_LR, default_matrix_NN, default_matrix_RF]:
+#     # Assuming LGD=1 and EAD=1 for simplicity
+#     # The loss for each borrower is equal to the default indicator
+#     # This means if a borrower defaults, the loss is 1, otherwise it is 0
+#     # We will sum the losses across all borrowers to get the total portfolio loss for each simulation
+#     # We will create a dictionary to store the losses for each model
+#     losses = {
+#         'LR losses': np.sum(default_matrix_LR, axis=1),
+#         'NN losses': np.sum(default_matrix_NN, axis=1),
+#         'RF losses': np.sum(default_matrix_RF, axis=1)
+#     } 
+
+# # Convert the losses dictionary to a DataFrame for better visualization
+# losses_df = pd.DataFrame(losses)
+
+# """ FIFTH STEP: 
+# Compute capital requirements based on the simulated losses.
+# In this step, we will compute the capital requirements based on the simulated losses.
+# The capital requirement is typically calculated as the expected loss (EL) plus a multiple of the unexpected loss (UL).
+# """
+
+# def compute_capital_requirements(losses_df, confidence_level=0.99):
+#     """
+#     Compute capital requirements based on simulated losses.
     
-    return joint_default_probabilities
+#     Parameters:
+#     - losses_df: DataFrame containing simulated losses for each model.
+#     - confidence_level: Confidence level for calculating unexpected loss (UL).
+    
+#     Returns:
+#     - capital_requirements: DataFrame with capital requirements for each model.
+#     """
+#     # Calculate expected loss (EL) as the mean of the losses
+#     expected_loss = losses_df.mean()
+    
+#     # Calculate unexpected loss (UL) as the quantile at the specified confidence level
+#     unexpected_loss = losses_df.quantile(confidence_level)
+    
+#     print(f"Expected Loss: {expected_loss}")
+#     print(f"Unexpected Loss: {unexpected_loss}")
+    
+# # Compute capital requirements for the simulated losses
+# capital_requirements = compute_capital_requirements(losses_df)
 
-# Estimate joint default probabilities for each model
-joint_default_probabilities_LR = estimate_joint_default_probabilities(default_matrix_LR)
-joint_default_probabilities_NN = estimate_joint_default_probabilities(default_matrix_NN)
-joint_default_probabilities_RF = estimate_joint_default_probabilities(default_matrix_RF)
+# """ SIXTH STEP:
+# Estimate the capital per borrower using the IRB approach.
+# The IRB (Internal Ratings-Based) approach is a method used by banks to calculate regulatory capital requirements for credit risk.
+# The IRB formula is given by:
+#     Ki = LGDi * normal_cdf((normal_ppf(PDi) + sqrt(rho) * normal_ppf(0.999))/sqrt(1 - rho)) - PDi * LGDi
+# where:
+# - Ki is the capital requirement for borrower i
+# - LGDi is the loss given default for borrower i
+# - PDi is the probability of default for borrower i
+# - rho is the correlation parameter (assumed to be 0.15 for this example)   
+# - normal_cdf is the cumulative distribution function of the standard normal distribution    
+# - normal_ppf is the percent-point function (inverse of CDF) of the standard normal distribution
+# - 0.999 is the confidence level for the unexpected loss calculation which is typically used in the IRB approach
+# """
 
-# Add the joint default probabilities to the combined_data DataFrame
-combined_data['Joint_PD_LR'] = joint_default_probabilities_LR
-combined_data['Joint_PD_NN'] = joint_default_probabilities_NN
-combined_data['Joint_PD_RF'] = joint_default_probabilities_RF
+# def irb_capital_per_borrower(PD, LGD, rho):
+#     q = norm.ppf(0.999)
+#     pd_term = norm.ppf(PD)
+#     capital = LGD * norm.cdf((pd_term + np.sqrt(rho) * q) / np.sqrt(1 - rho)) - PD * LGD
+#     return capital
+
+# # Let's apply it and compute the capital per borrower for each model and save the results as an extra column of combined_data DataFrame
+# rho = 0.15  # Correlation parameter
+# LGD_value = 1 # Assuming LGD is 1 for simplicity, can be adjusted later
+
+# # Add one extra column per model to the combined_data DataFrame for IRB capital
+# for model in ['LR', 'NN', 'RF']:
+#     combined_data[f"IRB_Capital_{model}"] = irb_capital_per_borrower(
+#         PD=combined_data[f"PD_{model}"].values,
+#         LGD=LGD_value,
+#         rho=rho 
+#     )
+    
+# """SEVENTH STEP:
+# We will added the losses for each model to the combined_data DataFrame.
+# We will also eliminate the default thresholds columns as they are not needed anymore.
+# """
+    
+# # Before saving the combined data, we will also add the losses for each model to the combined_data DataFrame
+# for model in ['LR', 'NN', 'RF']:
+#     combined_data[f"Losses_{model}"] = losses_df[f"{model} losses"].values
+    
+# # We will also eliminate the default thresholds columns as they are not needed anymore
+# combined_data.drop(columns=["default_threshold_LR", "default_threshold_NN", "default_threshold_RF"], inplace=True)
+    
+
+# """EIGHTH STEP:
+# Estimate Joint Default Probabilities
+# In this step, we will estimate the joint default probabilities using the Gaussian factor copula model.
+
+# Some questions to consider:
+
+#     1. What are joint default probabilities?
+#     Joint default probabilities refer to the likelihood of multiple borrowers defaulting simultaneously. They are crucial for understanding the risk exposure of a portfolio, as they capture the correlation between defaults across different borrowers. Estimating these probabilities helps in assessing the overall risk and making informed decisions regarding capital allocation and risk management.
+
+#     2. Why do we need to estimate joint default probabilities?
+#     Joint default probabilities are essential for understanding the likelihood of multiple borrowers defaulting simultaneously, which is crucial for risk management and capital allocation in a portfolio of loans. By estimating these probabilities, we can better assess the overall risk exposure and make informed decisions regarding capital requirements and risk mitigation strategies.
+
+#     3. How do joint default probabilities relate to the Gaussian factor copula model?
+#     The Gaussian factor copula model captures the dependence structure between the default probabilities of different borrowers. By simulating defaults based on common factors and sensitivity parameters, we can estimate the joint default probabilities as the mean of the simulated default matrix across multiple simulations. This allows us to account for the correlation between borrowers' defaults and provides a more accurate representation of the portfolio's risk profile.
+
+#     4. How to interpret the joint default probabilities?
+#     Joint default probabilities are interpreted as the likelihood of multiple borrowers defaulting simultaneously. A higher joint default probability indicates a greater risk of simultaneous defaults, while a lower probability suggests a more stable portfolio. These probabilities can be used to assess the overall risk exposure of the portfolio and inform capital allocation decisions.
+
+#     5. Are joint default probabilities different from marginal default probabilities?
+#     Yes, joint default probabilities differ from marginal default probabilities. Marginal default probabilities refer to the likelihood of an individual borrower defaulting, while joint default probabilities consider the simultaneous defaults of multiple borrowers. The Gaussian factor copula model allows us to estimate these joint probabilities by capturing the dependence structure between borrowers' defaults, which is not reflected in marginal probabilities alone.
+
+#     6. Do differen borrowers have different joint default probabilities?
+#     Yes, different borrowers can have different joint default probabilities based on their individual characteristics, such as credit scores, industry sectors, and other risk factors. The Gaussian factor copula model captures these differences by incorporating borrower-specific information and the common factors that influence defaults across the portfolio. As a result, the joint default probabilities will vary for each borrower depending on their unique risk profile and the overall portfolio dynamics.
+
+#     7. Do different borrorwers share the same joint default probabilities?
+#     Yes, different borrowers can share the same joint default probabilities if they are influenced by the same common factors and sensitivity parameters in the Gaussian factor copula model. However, the joint default probabilities can also vary among borrowers based on their individual characteristics and the specific common factors that affect them. The model captures both shared and unique influences on defaults, allowing for a nuanced understanding of joint default probabilities across the portfolio.
+# """
+
+# def estimate_joint_default_probabilities(default_matrix, n_simulations=1000):
+#     """
+#     Estimate joint default probabilities from the simulated default matrix.
+    
+#     Parameters:
+#     - default_matrix: np.array of shape (n_simulations, n_borrowers)
+    
+#     Returns:
+#     - joint_default_probabilities: np.array of shape (n_borrowers,) with estimated joint default probabilities
+#     """
+#     # Calculate the joint default probabilities as the mean of the default matrix across simulations
+#     joint_default_probabilities = np.mean(default_matrix, axis=0)
+    
+#     return joint_default_probabilities
+
+# # Estimate joint default probabilities for each model
+# joint_default_probabilities_LR = estimate_joint_default_probabilities(default_matrix_LR)
+# joint_default_probabilities_NN = estimate_joint_default_probabilities(default_matrix_NN)
+# joint_default_probabilities_RF = estimate_joint_default_probabilities(default_matrix_RF)
+
+# # Add the joint default probabilities to the combined_data DataFrame
+# combined_data['Joint_PD_LR'] = joint_default_probabilities_LR
+# combined_data['Joint_PD_NN'] = joint_default_probabilities_NN
+# combined_data['Joint_PD_RF'] = joint_default_probabilities_RF
 
 
-""" TENTH STEP:
-Save the final combined data with joint default probabilities to a new CSV file.
-"""
-# Save the combined data to a new CSV file
-combined_data_path = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customer_data_plus_PDs&IRB_Cap_req.csv'
-combined_data.to_csv(combined_data_path, index=False)
+# """ NINETH STEP:
+# Save the final combined data with joint default probabilities to a new CSV file.
+# """
+# # Save the combined data to a new CSV file
+# combined_data_path = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customer_data_plus_PDs&IRB_Cap_req.csv'
+# combined_data.to_csv(combined_data_path, index=False)
+
+
