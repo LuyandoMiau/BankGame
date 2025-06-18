@@ -58,7 +58,7 @@ Folders inside:
             LGD ---> Folder with the files to calculate the LGD
 
             Files inside:
-                LGD_estimation.py ---> In this file the original LGDs for the beginning of the game are calculated, without using any models
+                LGD_estimation.py ---> In this file the original LGDs for the beginning of the game are calculated, using a linear regression, as we now dont have any default infos, as our original data is not a time series one
 
             Folders inside:
 

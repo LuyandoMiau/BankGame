@@ -39,7 +39,7 @@ def main():
     X_scaled = scaler.fit_transform(X)
     
     # Return these variables to be used in the next steps
-    return X_train, X_test, X_train_scaled, X_test_scaled, y_train, y_test, X_scaled
+    return X_train, X_test, X_train_scaled, X_test_scaled, y_train, y_test, X_scaled, y
 
 if __name__ == "__main__":
     main()

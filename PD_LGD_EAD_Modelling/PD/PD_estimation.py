@@ -333,7 +333,7 @@ def main(
     from DataEditingVariableSetup import main as data_setup_main
 
     # Get the data
-    X_train, X_test, X_train_scaled, X_test_scaled, y_train, y_test, X_scaled = data_setup_main()
+    X_train, X_test, X_train_scaled, X_test_scaled, y_train, y_test, X_scaled, y = data_setup_main()
     feature_names = X_train.columns
 
     # --- Logistic Regression ---
