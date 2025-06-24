@@ -18,20 +18,8 @@ import sys
 import pandas as pd
 import numpy as np
 
-"""We will get our data from the customer_data_for_queries.csv file."""
-
 # Absolute path to the directory containing the CSV file
 data_dir = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/'
-
-# Optional: Add the directory to sys.path (only needed if you're importing modules from there)
-sys.path.append(os.path.abspath(data_dir))
-
-# Full path to the CSV file
-file_path = os.path.join(data_dir, 'customers_data_for_queries.csv')
-
-# Load the customer data using the full path
-df = pd.read_csv(file_path)
-
 
 """ Now we have the data ready, we can start calculating the interest rates.
 We will use the scaled data for the interest rate calculation.
@@ -110,8 +98,27 @@ def calculate_interest_rate(df,
 
     return interest_rate
 
-# Calculate the interest rate for the whole dataset
-interest_rates = calculate_interest_rate(df, base_rate, max_interest_rate, credit_to_income_ratio_factor, loan_duration_factor, debt_factor, asset_factor)
+
+def main():
+    """We will get our data from the customer_data_for_queries.csv file."""
+
+    # Add the directory to sys.path
+    sys.path.append(os.path.abspath(data_dir))
+
+    # Full path to the CSV file
+    file_path = os.path.join(data_dir, 'customers_data_for_queries.csv')
+
+    # Load the customer data using the full path
+    df = pd.read_csv(file_path)
+
+    # Calculate the interest rate for the whole dataset
+    interest_rates = calculate_interest_rate(df, base_rate, max_interest_rate, credit_to_income_ratio_factor, loan_duration_factor, debt_factor, asset_factor)
+
+    return interest_rates
+
+# This will be the main function that will be called when the script is run
+if __name__ == "__main__":
+    main()
 
 
 
