@@ -53,6 +53,11 @@ Folders inside:
 
         Folders inside:
 
+            Interest_rates ---> Folder in which the interest rates will be calculated
+
+                Files inside:
+                    original_i_rates_estimation.py ---> In this file will the original interest rates be calculated
+
             EAD ---> Folder with the files to calculate the EAD
 
             LGD ---> Folder with the files to calculate the LGD

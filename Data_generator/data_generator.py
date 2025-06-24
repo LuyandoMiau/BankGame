@@ -1,5 +1,5 @@
 """ File with the functions to generate the data with the customer profiles."""
-from functions_data_generator import generate_profession, generate_working_sector, generate_income_expense, generate_credit_requested, calculate_collateral, estimate_seizable_assets, generate_default_label
+from functions_data_generator import generate_profession, generate_working_sector, generate_income_expense, generate_credit_requested, calculate_collateral, get_collateral_type, estimate_seizable_assets, generate_default_label
 
 """Packages for data generation."""
 import pandas as pd
@@ -60,6 +60,7 @@ def data_generator(number_of_customers):
             
         # collateral and seizurable asset
         collateral = calculate_collateral(profession)
+        collateral_type = get_collateral_type(collateral) # This is the type of collateral based on the profession
         estimated_seizable_assets = estimate_seizable_assets(monthly_income, savings_debt, profession, collateral)
         
         # ---------------- Y-Variable --------------------------------#
@@ -83,6 +84,7 @@ def data_generator(number_of_customers):
             'requested_loan_duration': credit_term_months, # depends on the credit-to-income ratio
             'debt-to-income ratio after credit': debt_to_income_ratio_total, # abs((savings_debt - credit)/monthly_income)
             'collateral': collateral, # depends on the profession
+            'collateral type': collateral_type, # depends on the profession
             'estimated seizable assets': estimated_seizable_assets, # it is based on the monthly income, the savings, the profession and the collateral
             'y-categorical-default': default_not_default # depending on profession, past_credits, debt_to_income_ratio_partial, credit_to_income_ratio
         })
@@ -113,7 +115,7 @@ def main():
     """This df will be used to make the models"""
 
     # Convert categorical variables to numeric binary variables
-    df_R = pd.get_dummies(df_1, columns=["educational level", "profession", "working sector", "type of credit"], drop_first=True)
+    df_R = pd.get_dummies(df_1, columns=["educational level", "profession", "working sector", "type of credit", "collateral type"], drop_first=True)
 
     # Save it to a CSV file
     df_R.to_csv(saving_path_models, index=False)
