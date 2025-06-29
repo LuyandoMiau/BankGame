@@ -56,20 +56,6 @@ file_path = os.path.join(data_dir, 'customers_data_for_queries.csv')
 df = pd.read_csv(file_path)
 
 
-"""Now let"s import our original_i)rates_estimation.py script to get the interest rates.
-We will use the interest rates to estimate the LGD.
-We will use the interest rates as a feature in our LGD estimation model.
-"""
-
-# Adjust path for module import
-sys.path.append(os.path.abspath('/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/PD_LGD_EAD_Modelling/Interest_rates'))
-
-# Import your data setup function
-from original_i_rates_estimation import main as interest_rates_main
-
-# Get the interest rates
-interest_rates = interest_rates_main()
-
 """Now let's estimate our LGDs
 We will consider the interest rates as a feature in our LGD estimation model.
 We need to recognize that we do not have any default information yet,
@@ -132,13 +118,26 @@ def estimate_lgd(df, interest_rates):
     
     return pd.Series(lgd, index=df.index, name='LGD')
 
-lgd_estimates = estimate_lgd(df, interest_rates)
-print(lgd_estimates.mean())
-
-# def main():
-#     # Estimate LGD using the provided DataFrame and interest rates
-#     lgd_estimates = estimate_lgd(X_scaled, interest_rates)
+def main():
     
-#     # Return the LGD estimates
-#     lgd_estimates = pd.DataFrame(lgd_estimates, columns=['LGD'])
-#     return lgd_estimates
+    """Now let"s import our original_i)rates_estimation.py script to get the interest rates.
+    We will use the interest rates to estimate the LGD.
+    We will use the interest rates as a feature in our LGD estimation model.
+    """
+
+    # Adjust path for module import
+    sys.path.append(os.path.abspath('/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/PD_LGD_EAD_Modelling/Interest_rates'))
+
+    # Import your data setup function
+    from original_i_rates_estimation import main as interest_rates_main
+
+    # Get the interest rates
+    interest_rates = interest_rates_main()
+    
+    # Get the LGD estimates
+    lgd_estimates = estimate_lgd(df, interest_rates)
+    return lgd_estimates
+
+if __name__ == "__main__":
+    main()
+    print("LGD estimation completed successfully.")

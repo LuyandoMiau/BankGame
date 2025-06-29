@@ -119,7 +119,7 @@ def main():
 # This will be the main function that will be called when the script is run
 if __name__ == "__main__":
     main()
-
+    print("Interest rates calculated successfully.")
 
 
 # # Now get the summary of the interest rates

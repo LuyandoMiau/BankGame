@@ -7,7 +7,7 @@ scripts = [
     "Data_generator/data_generator.py",
     "Data_generator/SQL_queries/SQL_queries_Data.py",
     "PD_LGD_EAD_Modelling/DataEditingVariableSetup.py",
-    "PD_LGD_EAD_Modelling/PD/Gaussian_factor_copula.py"
+    "PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py"
 ]
 
 # Run each script

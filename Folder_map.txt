@@ -62,18 +62,23 @@ Folders inside:
 
             LGD ---> Folder with the files to calculate the LGD
 
-            Files inside:
-                LGD_estimation.py ---> In this file the original LGDs for the beginning of the game are calculated, using a linear regression, as we now dont have any default infos, as our original data is not a time series one
+                Files inside:
+                    LGD_estimation.py ---> In this file the original LGDs for the beginning of the game are calculated, using a linear regression, as we now dont have any default infos, as our original data is not a time series one
 
-            Folders inside:
+                Folders inside:
 
-                Performing ---> In this folder the performing LGDs will be calculated throughout the game
+                    Performing ---> In this folder the performing LGDs will be calculated throughout the game
 
-                In-Default ---> In this folder the In-Default LGDs will be calculated throughout the game
+                    In-Default ---> In this folder the In-Default LGDs will be calculated throughout the game
 
-            PD ---> Foler with the files to calculate the PD
+            PD ---> Folder with the files to calculate the PD
+                
                 Files inside:
                     PD_estimation.py ---> In this file using the Data from DataEditingVariableSetup.py the PDs are estimates using Logisitic Regresion, Neuronal Networks and Random Forests + a Monte Carlo simulation with bootstrap replacement of the data is run to check for scores of the perfomrance of each model 
+            
+            Gaussian_copula_estimation ---> Folder which will calculate the portfolio losses using a Gaussian copula model
+
+                Files inside:
                     5* Gaussian_factor_copula.py ---> Calls the main function of PD_estimation.py, in this file we introduce a Gaussian factor copula model to estimate the joint default behavior of the customers
 
 
