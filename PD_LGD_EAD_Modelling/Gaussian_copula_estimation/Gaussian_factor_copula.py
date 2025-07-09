@@ -247,50 +247,7 @@ EAD = combined_data['EAD'].values
 for model, matrix in zip(['LR', 'NN', 'RF'], [default_matrix_LR, default_matrix_NN, default_matrix_RF]):
     combined_data[f'EL_{model}'] = np.mean(matrix, axis=0) * combined_data['LGD'] * combined_data['EAD']
 
-
-# """ FIFTH STEP: 
-# Compute capital requirements based on the simulated losses.
-# Here, losses_df is no longer a separate DataFrame, but rather the EL columns in combined_data.
-# """
-
-# def compute_capital_requirements_from_EL(combined_data, models=['LR', 'NN', 'RF'], confidence_level=0.99):
-#     """
-#     Compute capital requirements based on expected losses (EL) stored in combined_data.
-    
-#     Parameters:
-#     - combined_data: DataFrame containing EL columns for each model
-#     - models: list of model suffixes to use
-#     - confidence_level: Confidence level for UL calculation
-    
-#     Returns:
-#     - capital_requirements: dict with model names as keys and capital requirement values
-#     """
-#     capital_requirements = {}
-
-#     for model in models:
-#         # EL per borrower from combined_data
-#         EL = combined_data[f'EL_{model}'].values
-        
-#         # Since EL is mean losses per borrower, compute portfolio EL as sum
-#         portfolio_EL = EL.sum()
-        
-#         # We don't have full loss simulations here, so estimate UL approx using portfolio variance (optional)
-#         # Alternatively, here you could integrate the simulated default matrices * LGD * EAD if needed.
-#         # For simplicity, let's calculate UL as quantile from simulated portfolio loss if we had it:
-#         # But since you want minimal changes, let's skip UL calculation here.
-        
-#         # For demo, just store EL for now, user can extend with full loss simulation later
-#         capital_requirements[model] = {
-#             "Expected_Loss": portfolio_EL,
-#             # "Unexpected_Loss": <to be calculated if full loss simulation available>
-#         }
-    
-#     return capital_requirements
-
-# capital_requirements = compute_capital_requirements_from_EL(combined_data)
-
-
-""" SIXTH STEP: CHECK CALCULATION AGAIN!
+"""FIFTH STEP: CHECK CALCULATION AGAIN!
 Estimate the capital per borrower using the IRB approach.
 The IRB (Internal Ratings-Based) approach is a method used by banks to calculate regulatory capital requirements for credit risk.
 The IRB formula is given by:
@@ -303,6 +260,13 @@ where:
 - normal_cdf is the cumulative distribution function of the standard normal distribution    
 - normal_ppf is the percent-point function (inverse of CDF) of the standard normal distribution
 - 0.999 is the confidence level for the unexpected loss calculation which is typically used in the IRB approach
+
+PLEASE NOTEE: the IRB capital requirement may be and it is expected to be bigger than the expected loss (EL) calculated above.
+This is because the IRB approach accounts for unexpected losses and the correlation between borrowers, while the
+expected loss is simply the average loss based on the default indicators.
+Also the IRB capital requirement accounts for 99% of the worst-case scenario.
+Our calculation formula includes a VaR (Value at Risk) which is the 99.9% quantile of the standard normal distribution.
+That is a very extreme tail, so the IRB capital requirement will be higher than the expected loss.
 """
 
 def irb_capital_per_borrower(EAD, PD, LGD, rho):
@@ -326,15 +290,22 @@ for model in ['LR', 'NN', 'RF']:
         rho=rho
     )
     
-"""SEVENTH STEP: REVIEWED!
+"""SIXTH STEP: REVIEWED!
 Let's clean up the combined_data DataFrame by removing unnecessary columns.
 """
     
 # We will also eliminate the default thresholds columns as they are not needed anymore
 combined_data.drop(columns=["default_threshold_LR", "default_threshold_NN", "default_threshold_RF"], inplace=True)
+
+""" SEVENTH STEP: REVIEWED!
+Save the final combined data with joint default probabilities to a new CSV file.
+"""
+# Save the combined data to a new CSV file
+combined_data_path = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/PD_LGD_EAD_IRB/customer_data_plus_PDs&IRB_Cap_req.csv'
+combined_data.to_csv(combined_data_path, index=False)
     
 
-"""EIGHTH STEP: CHECK IF THE JOINT DEFAULT PROBABILITIES ARE CORRECTLY ESTIMATED!
+"""EIGHTH STEP: REVIEWED!
 Estimate Joint Default Probabilities
 In this step, we will estimate the joint default probabilities using the Gaussian factor copula model.
 
@@ -362,37 +333,87 @@ Some questions to consider:
     Yes, different borrowers can share the same joint default probabilities if they are influenced by the same common factors and sensitivity parameters in the Gaussian factor copula model. However, the joint default probabilities can also vary among borrowers based on their individual characteristics and the specific common factors that affect them. The model captures both shared and unique influences on defaults, allowing for a nuanced understanding of joint default probabilities across the portfolio.
 """
 
-def estimate_joint_default_probabilities(default_matrix, n_simulations=1000):
+def estimate_pairwise_joint_defaults(default_matrix):
     """
-    Estimate joint default probabilities from the simulated default matrix.
-    
+    Estimate pairwise joint default probabilities from a simulated default matrix.
+
     Parameters:
     - default_matrix: np.array of shape (n_simulations, n_borrowers)
-    
+
     Returns:
-    - joint_default_probabilities: np.array of shape (n_borrowers,) with estimated joint default probabilities
+    - joint_probs: np.array of shape (n_borrowers, n_borrowers)
+                   where joint_probs[i, j] is P(default_i AND default_j)
+                   
+    This function is very informative as it calculates the probability of joint defaults for each pair of borrowers
+    based on the simulated default matrix. It provides insights into the correlation between defaults across different borrowers
+    and helps in understanding the overall risk exposure of the portfolio.
     """
-    # Calculate the joint default probabilities as the mean of the default matrix across simulations
-    joint_default_probabilities = np.mean(default_matrix, axis=0)
-    
-    return joint_default_probabilities
+    n_sim, n_borrowers = default_matrix.shape
+    joint_probs = (default_matrix.T @ default_matrix) / n_sim
+    return joint_probs
 
 # Estimate joint default probabilities for each model
-joint_default_probabilities_LR = estimate_joint_default_probabilities(default_matrix_LR)
-joint_default_probabilities_NN = estimate_joint_default_probabilities(default_matrix_NN)
-joint_default_probabilities_RF = estimate_joint_default_probabilities(default_matrix_RF)
+joint_default_probabilities_LR = estimate_pairwise_joint_defaults(default_matrix_LR)
+joint_default_probabilities_NN = estimate_pairwise_joint_defaults(default_matrix_NN)
+joint_default_probabilities_RF = estimate_pairwise_joint_defaults(default_matrix_RF)
 
-# Add the joint default probabilities to the combined_data DataFrame
-combined_data['Joint_PD_LR'] = joint_default_probabilities_LR
-combined_data['Joint_PD_NN'] = joint_default_probabilities_NN
-combined_data['Joint_PD_RF'] = joint_default_probabilities_RF
+"""NINTH STEP: Function to identify the top joint default borrowers
+This function identifies the top N borrowers with the highest joint default probabilities for each borrower.
+It returns a DataFrame with borrower IDs and their top N joint default borrowers.
+This is useful for understanding the risk concentration in the portfolio and identifying borrowers that are likely to default together.
+This information can be used for risk management, capital allocation, and portfolio optimization."""
+# Identify for each borrower the top 5 borrowers with the highest joint default probabilities and save to a CSV file
+def top_joint_default_borrowers(joint_probs, borrower_ids, top_n=5):
+    """
+    Identify the top N borrowers with the highest joint default probabilities for each borrower,
+    and return both the borrower IDs and the corresponding probabilities.
 
+    Parameters:
+    - joint_probs: np.array of shape (n_borrowers, n_borrowers)
+    - borrower_ids: list of borrower IDs or indices
+    - top_n: number of top borrowers to identify
 
-""" NINETH STEP: REVIEWED!
-Save the final combined data with joint default probabilities to a new CSV file.
-"""
-# Save the combined data to a new CSV file
-combined_data_path = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customer_data_plus_PDs&IRB_Cap_req.csv'
-combined_data.to_csv(combined_data_path, index=False)
+    Returns:
+    - top_borrowers_df: DataFrame with borrower IDs, their top N joint default borrowers, and probabilities
+    """
+    # Just to check the shape of joint_probs and borrower_ids
+    #assert joint_probs.shape[0] == joint_probs.shape[1], "joint_probs must be square"
+    #assert joint_probs.shape[0] == len(borrower_ids), "Mismatch with borrower_ids"
 
+    # n_borrowers is the number or rows or of columns in joint_probs
+    n_borrowers = joint_probs.shape[0]
+    results = {} # Initialize a dictionary to hold results
+    
+    # Iterate over each borrower to find their top N joint default borrowers
+    for i in range(n_borrowers):
+        row = joint_probs[i].copy()
+        row[i] = -1  # Exclude self
+        top_indices = np.argsort(row)[-top_n:][::-1]
+        top_ids = [borrower_ids[idx] for idx in top_indices]
+        top_probs = [joint_probs[i, idx] for idx in top_indices]
+        results[borrower_ids[i]] = [val for pair in zip(top_ids, top_probs) for val in pair]
 
+    # Define the number of columns based on top_n
+    # Each borrower will have top_n pairs of (ID, Probability)
+    columns = []
+    for j in range(top_n):
+        columns.extend([f"Top_{j+1}_ID", f"Top_{j+1}_Prob"])
+
+    # Create a DataFrame from the results dictionary
+    top_borrowers_df = pd.DataFrame.from_dict(results, orient='index', columns=columns)
+    return top_borrowers_df
+
+# Assuming combined_data has an index of borrower IDs
+borrower_ids = combined_data.index.tolist() 
+# Get top joint default borrowers for each model
+top_joint_borrowers_LR = top_joint_default_borrowers(joint_default_probabilities_LR, borrower_ids)
+top_joint_borrowers_NN = top_joint_default_borrowers(joint_default_probabilities_NN, borrower_ids)
+top_joint_borrowers_RF = top_joint_default_borrowers(joint_default_probabilities_RF, borrower_ids)
+
+# Define the path to save the joint default probabilities
+joint_default_probs_path = "/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/joint_def_prob/"
+
+# Save the top joint default borrowers to CSV files for each model
+top_joint_borrowers_LR.to_csv(joint_default_probs_path + 'top_joint_borrowers_LR.csv', index_label='Borrower_ID')
+top_joint_borrowers_NN.to_csv(joint_default_probs_path + 'top_joint_borrowers_NN.csv', index_label='Borrower_ID')
+top_joint_borrowers_RF.to_csv(joint_default_probs_path + 'top_joint_borrowers_RF.csv', index_label='Borrower_ID')

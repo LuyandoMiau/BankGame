@@ -28,6 +28,21 @@ Folders inside:
         Folders inside:
             
             Generated_data ---> Here the data in .csv files is stored
+
+                Folders inside: 
+
+                    joint_def_prob ---> Here will the data of the joint default probabilities be saved
+
+                        Files inside:
+                            joint_default_probabilities_LR.csv ---> joint default probabilities using LR model
+                            joint_default_probabilities_NN.csv ---> joint default probabilities using NN model
+                            joint_default_probabilities_RF.csv ---> joint default probabilities using RF model
+                    
+                    PD_LGD_EAD_IRB ---> Here is the data saved with a combination of our "customers_data_for_queries.csv" plus the estimated PDs, LGDs, EADs and IRB requirements
+
+                        Files inside:
+                            customer_data_plus_PDs&IRB_Cap_req.csv ---> extended data with PD, LGD, EAD and IRB Capital Requirements estimations
+
                 Files inside:
                     customer_data_for_models.csv --> Used for the after modelling of the PD, LGD and EAD.
                     customer_data_for_queries.csv --> Used to create SQL queries with the data
