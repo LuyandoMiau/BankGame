@@ -6,6 +6,7 @@ Still to do for this version:
 3. Create SQL file for visualization of the file customer_data_plus_PDs&IRB_Cap_req.csv
 4. Create a unique file with all the paramters required to run the code, for easy access and easy editing.
 5. Create an explanatory note in README about this
+6. Include a more detailed way to calcualte interest rates
 
 To-Dos for next version:
 1. create a user interface (GUI) using html or something else.
