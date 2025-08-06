@@ -4,9 +4,9 @@ Still to do for this version:
 1. Enhance the balance to have assets and liabilities.
 2. Add MoC
 3. Create SQL file for visualization of the file customer_data_plus_PDs&IRB_Cap_req.csv
-4. Create a unique file with all the parameters required to run the code, for easy access and easy editing.
+4. Create a unique file with all the parameters required to run the code, for easy access and easy editing. --> main_pipeline
 5. Create an explanatory note in README about this
-6. Include a more detailed way to calcualte interest rates
+6. Include a more detailed way to calculate interest rates given what you learned in the Credit Risk Advanced Course
 7. Create a file, apart from Folder map with the dependencies of each file
 
 To-Dos for next version:
