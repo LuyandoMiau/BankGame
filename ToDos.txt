@@ -1,0 +1,15 @@
+Still to do for this version:
+
+0. Make a graph of the joint probabilities of default to check for highest likelihoods of default
+1. Enhance the balance to have assets and liabilities.
+2. Add MoC
+3. Create SQL file for visualization of the file customer_data_plus_PDs&IRB_Cap_req.csv
+4. Create a unique file with all the parameters required to run the code, for easy access and easy editing. --> main_pipeline
+5. Create an explanatory note in README about this
+6. Include a more detailed way to calculate interest rates given what you learned in the Credit Risk Advanced Course
+7. Create a file, apart from Folder map with the dependencies of each file
+
+To-Dos for next version:
+1. create a user interface (GUI) using html or something else.
+2. create the shocks and manage data creation with other tools for the periods to come in which the data should move and variables need to be recalculated accordingly.
+3. Dockerize everything.
