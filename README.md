@@ -44,7 +44,8 @@ A screen will be displayed in which each period the user will be able to see:
 README.md ---> Nice info for anyone who is interested in the build up of the Game, what is in the background.
 
 [main_pipeline.py](main_pipeline.py) ---> The only file that needs to be run in order to run the Game, this one also includes the inputs that can be adjusted to change the data creation and the game conditions.
-===> Dependencies above = None, Dependencies below = [BalanceSheet.py](./Bank_BalanceSheet/Original_setup/BalanceSheet.py), [data_generator.py](./Data_generator/data_generator.py), [SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py)
+
+===> Dependencies above = NONE, Dependencies below = ([BalanceSheet.py](./Bank_BalanceSheet/Original_setup/BalanceSheet.py), [data_generator.py](./Data_generator/data_generator.py), [SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py), [DataEditingVariableSetup.py](./PD_LGD_EAD_Modelling/DataEditingVariableSetup.py), [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py))
 
 [.gitignore](.gitignore) ---> This file tells Git which files or folders to ignore and not track or commit in the repository (like temporary files, logs, or environment configs).
 
@@ -59,18 +60,23 @@ Folders inside:
     Files inside:
 
     *1[BalanceSheet.py](./Bank_BalanceSheet/Original_setup/BalanceSheet.py) ---> Contains the original set up of assets, liabilities and equity of the bank 
-    ===> Dependencies above = [main_pipeline.py](main_pipeline.py), Dependencies below = None
+
+    ===> Dependencies above = [main_pipeline.py](main_pipeline.py), Dependencies below = NONE
 
 2. Dynamics ---> Here will be the Balance sheet recalculated, how? Each period the loans approved will have an impact on the balance sheet. Moreover at the end of each period, given the changing dynamics of the customers with loans in the bank and economic changes, will the Balance Sheet be affected and thus recalculated.
+
+NO FILES FOR NOW
 
 #### Data_generator ---> To generate the data of the costumers
         
 Files inside:
 
 [functions_data_generator.py](./Data_generator/functions_data_generator.py) ---> Functions to generate the customer data, X-variables and y-variable for the regression models. The description of the functions and which types of variable sit generates is here contained.
-===> Dependencies above = [data_generator.py](./Data_generator/data_generator.py), Dependencies below = None
+
+===> Dependencies above = [data_generator.py](./Data_generator/data_generator.py), Dependencies below = NONE
 
 *2[data_generator.py](./Data_generator/data_generator.py) ---> Generates all the customer data using the functions_data_generator.py and returns two files one for SQL queries and one for modelling.
+
 ===> Dependencies above = [main_pipeline.py](main_pipeline.py), Dependencies below = [functions_data_generator.py](./Data_generator/functions_data_generator.py)
         
 Folders inside:
@@ -80,10 +86,12 @@ Folders inside:
 Files inside:
 
 [customers_data_for_models.csv](./Data_generator/Generated_data/customers_data_for_models.csv) --> Contains the customer data generated at the beginning of the game. It is used for the after modelling of the PD, LGD and EAD.
-===> Dependencies above = TO BE UPDATED, Dependencies below = [data_generator.py](./Data_generator/data_generator.py)
+
+===> Dependencies above = [DataEditingVariableSetup.py](./PD_LGD_EAD_Modelling/DataEditingVariableSetup.py), Dependencies below = [data_generator.py](./Data_generator/data_generator.py)
 
 [customers_data_for_queries.csv](./Data_generator/Generated_data/customers_data_for_queries.csv) --> Contains the customer data generated at the beginning of the game. Used to create SQL queries with the data for evaluation of the statistics and dependencies of the data.
-===> Dependencies above = TO BE UPDATED, Dependencies below = [data_generator.py](./Data_generator/data_generator.py)
+
+===> Dependencies above = ([original_i_rates_estimation.py](./PD_LGD_EAD_Modelling/Interest_rates/original_i_rates_estimation.py), [LGD_estimation.py](./PD_LGD_EAD_Modelling/LGD/LGD_estimation.py)), Dependencies below = [data_generator.py](./Data_generator/data_generator.py)
 
 Folders inside: 
 
@@ -97,7 +105,7 @@ a. joint_def_prob ---> Here will the data of the joint default probabilities be 
 
  [top_joint_borrowers_RF.csv](./Data_generator/Generated_data/joint_def_prob/top_joint_borrowers_RF.csv) ---> joint default probabilities using RF model
 
- ===> Dependencies above = TO BE UPDATED, Dependencies below = [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py)
+ ===> Dependencies above = NONE YET, Dependencies below = [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py)
                  
  b. PD_LGD_EAD_IRB ---> Here is the data saved with a combination of our "customers_data_for_queries.csv" plus the estimated PDs, LGDs, EADs and IRB requirements
 
@@ -111,7 +119,7 @@ a. joint_def_prob ---> Here will the data of the joint default probabilities be 
 
 Files inside:
 
-*3 [SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py) --> This file is used to create the queries
+*3[SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py) --> This file is used to create the queries
 
 ===> Dependencies above = [main_pipeline.py](main_pipeline.py), Dependencies below = [data_generator.py](./Data_generator/data_generator.py)
 
@@ -133,46 +141,72 @@ Files inside:
 
 NOTE regarding [SQL_queries_type_credit.sql](./Data_generator/SQL_queries/Data/SQL_queries_type_credit.sql) and [SQL_queries_working_sector.sql](./Data_generator/SQL_queries/Data/SQL_queries_working_sector.sql) is that we make queries specific for this variables because they are specific factors shared accross individuals with the same characteristic that affects the PDs of the customers in our Gaussian Copula Factor Model
 
-===> Dependencies above = None, Dependencies below = [SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py)
+===> Dependencies above = NONE, Dependencies below = [SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py)
 
 
 ---> CONTINUE CHANGING HERE BUT CHECK WHAT SAYS "TO BE UPDATED" ABOVE
+
 ---> ENHANCE THE STRUCTURE OF THE FOLDERS AND FILES (THE FORMAT SO THAT IN THE VISIBLE VERSION, IT IS CLEAR WHICH FILES BELONG TO WHICH FOLDER AND THE STRUCTURE IS CLEAR AND VISIBLE)
 
 #### PD_LGD_EAD_Modelling ---> Here all the folders and files to model the PDs, LGDs and EADs, that"s is to asses Credit Risk
 
-        Files inside:
-            4* DataEditingVariableSetup.py ---> This one uses our customer_data_for_models.csv to transform the data and define the Xs and y to be used to model PDs, LGDs, and EADs.
+Files inside:
 
-        Folders inside:
+4*[DataEditingVariableSetup.py](./PD_LGD_EAD_Modelling/DataEditingVariableSetup.py) ---> It basically transforms the variables to be that we have from our customers to be usef for regressions and Machine Learning models.
 
-            Interest_rates ---> Folder in which the interest rates will be calculated
+===> Dependencies above = [PD_estimation.py](./PD_LGD_EAD_Modelling/PD/PD_estimation.py), Dependencies below = [customer_data_for_models.csv](./Data_generator/Generated_data/customers_data_for_models.csv)
 
-                Files inside:
-                    original_i_rates_estimation.py ---> In this file will the original interest rates be calculated
+Folders inside:
 
-            EAD ---> Folder with the files to calculate the EAD
+1. Interest_rates ---> Folder in which the interest rates will be calculated
 
-            LGD ---> Folder with the files to calculate the LGD
+Files inside:
 
-                Files inside:
-                    LGD_estimation.py ---> In this file the original LGDs for the beginning of the game are calculated, using a linear regression, as we now dont have any default infos, as our original data is not a time series one
+[original_i_rates_estimation.py](./PD_LGD_EAD_Modelling/Interest_rates/original_i_rates_estimation.py) ---> In this file will the original interest rates be calculated
 
-                Folders inside:
+===> Dependencies above = [LGD_estimation.py](./PD_LGD_EAD_Modelling/LGD/LGD_estimation.py), Dependencies below = [customer_data_for_queries.csv](./Data_generator/Generated_data/customers_data_for_queries.csv)
 
-                    Performing ---> In this folder the performing LGDs will be calculated throughout the game
+1. EAD ---> Folder with the files to calculate the EAD
 
-                    In-Default ---> In this folder the In-Default LGDs will be calculated throughout the game
+Files inside:
 
-            PD ---> Folder with the files to calculate the PD
+[EAD_models.py](./PD_LGD_EAD_Modelling/EAD/EAD_models.py) ---> Not yet filled
+
+3. LGD ---> Folder with the files to calculate the LGD
+
+Files inside:
+
+[LGD_estimation.py](./PD_LGD_EAD_Modelling/LGD/LGD_estimation.py) ---> In this file the original LGDs for the beginning of the game are calculated, using a linear regression, as we now dont have any default infos, as our original data is not a time series one
+
+===> Dependencies above = [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py), Dependencies below = ([customer_data_for_queries.csv](./Data_generator/Generated_data/customers_data_for_queries.csv), [original_i_rates_estimation.py](./PD_LGD_EAD_Modelling/Interest_rates/original_i_rates_estimation.py))
+
+Folders inside:
+
+a. Performing ---> In this folder the performing LGDs will be calculated throughout the game
+
+No files yet
+
+b In-Default ---> In this folder the In-Default LGDs will be calculated throughout the game
+
+No files yet
+
+4. PD ---> Folder with the files to calculate the PD
                 
-                Files inside:
-                    PD_estimation.py ---> In this file using the Data from DataEditingVariableSetup.py the PDs are estimates using Logisitic Regresion, Neuronal Networks and Random Forests + a Monte Carlo simulation with bootstrap replacement of the data is run to check for scores of the perfomrance of each model 
-            
-            Gaussian_copula_estimation ---> Folder which will calculate the portfolio losses using a Gaussian copula model
+Files inside:
 
-                Files inside:
-                    5* Gaussian_factor_copula.py ---> Calls the main function of PD_estimation.py, in this file we introduce a Gaussian factor copula model to estimate the joint default behavior of the customers
+[PD_estimation.py](./PD_LGD_EAD_Modelling/PD/PD_estimation.py) ---> In this file using the edited data for the models and the PDs are estimated using Logisitic Regresion, Neuronal Networks and Random Forests + a Monte Carlo simulation with bootstrap replacement of the data is run to check for scores of the performance of each model 
+
+===> Dependencies above = [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py), Dependencies below = [DataEditingVariableSetup.py](./PD_LGD_EAD_Modelling/DataEditingVariableSetup.py)
+            
+1. Gaussian_copula_estimation ---> Folder which will calculate the portfolio losses using a Gaussian copula model
+
+Files inside:
+
+5*[Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py) ---> In this file we introduce a Gaussian factor copula model to estimate the joint default behavior of the customers, we estimate the join probabilities of default and the IRB requirements that should be hold for each customer if the loan is lend to them
+
+===> Dependencies above = [main_pipeline.py](main_pipeline.py), Dependencies below = ([customer_data_for_queries.csv](./Data_generator/Generated_data/customers_data_for_queries.csv), [PD_estimation.py](./PD_LGD_EAD_Modelling/PD/PD_estimation.py), [LGD_estimation.py](./PD_LGD_EAD_Modelling/LGD/LGD_estimation.py))
+
+
 
 
 
