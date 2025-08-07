@@ -1,13 +1,15 @@
 import subprocess
 import os
 
+# HERE A SPACE TO DEFINE THE PARAMETERS FOR THE GAME, BUT NOT YET
+
 # Define the paths to the scripts in the order they need to run
 scripts = [
-    "Bank_BalanceSheet/Original_setup/BalanceSheet.py",
     "Data_generator/data_generator.py",
     "Data_generator/SQL_queries/SQL_queries_Data.py",
     "PD_LGD_EAD_Modelling/DataEditingVariableSetup.py",
-    "PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py"
+    "PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py",
+    "Bank_BalanceSheet/Original_setup/BalanceSheet.py" # Cannot be run properly, check why
 ]
 
 # Run each script

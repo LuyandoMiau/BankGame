@@ -45,13 +45,13 @@ A screen will be displayed in which each period the user will be able to see:
 
     [main_pipeline.py](main_pipeline.py) ---> The only file that needs to be run in order to run the Game, this one also includes the inputs that can be adjusted to change the data creation and the game conditions.
 
-    ===> Dependencies above = NONE, Dependencies below = ([BalanceSheet.py](./Bank_BalanceSheet/Original_setup/BalanceSheet.py), [data_generator.py](./Data_generator/data_generator.py), [SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py), [DataEditingVariableSetup.py](./PD_LGD_EAD_Modelling/DataEditingVariableSetup.py), [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py))
+    ===> Dependencies above = NONE, Dependencies below = ([BankStatements.py](./Bank_Statements/Original_setup/BankStatements.py), [data_generator.py](./Data_generator/data_generator.py), [SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py), [DataEditingVariableSetup.py](./PD_LGD_EAD_Modelling/DataEditingVariableSetup.py), [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py))
 
     [.gitignore](.gitignore) ---> This file tells Git which files or folders to ignore and not track or commit in the repository (like temporary files, logs, or environment configs).
 
-1. Folders inside: 
+2. Folders inside: 
 
-   1. Bank_BalanceSheet ---> To generate the original Balance Sheet and Manage the Dynamics during the Game
+   1. Bank_Statements ---> To generate the Bank original (and dynamic) set of Statements throughout the game, like "Balance Sheet", "Income Statemet" and "Cash Flow".
 
         1. Folders inside:
 
@@ -59,7 +59,7 @@ A screen will be displayed in which each period the user will be able to see:
 
                 1. Files inside:
 
-                    *1[BalanceSheet.py](./Bank_BalanceSheet/Original_setup/BalanceSheet.py) ---> Contains the original set up of assets, liabilities and equity of the bank 
+                    *5[BankStatements.py](./Bank_Statements/Original_setup/BankStatements.py) ---> Contains the original set up of assets, liabilities and equity of the bank 
 
                     ===> Dependencies above = [main_pipeline.py](main_pipeline.py), Dependencies below = NONE
 
@@ -73,7 +73,7 @@ A screen will be displayed in which each period the user will be able to see:
 
             ===> Dependencies above = [data_generator.py](./Data_generator/data_generator.py), Dependencies below = NONE
 
-            *2[data_generator.py](./Data_generator/data_generator.py) ---> Generates all the customer data using the functions_data_generator.py and returns two files one for SQL queries and one for modelling.
+            *1[data_generator.py](./Data_generator/data_generator.py) ---> Generates all the customer data using the functions_data_generator.py and returns two files one for SQL queries and one for modelling.
 
             ===> Dependencies above = [main_pipeline.py](main_pipeline.py), Dependencies below = [functions_data_generator.py](./Data_generator/functions_data_generator.py)
         
@@ -117,7 +117,7 @@ A screen will be displayed in which each period the user will be able to see:
 
                 1. Files inside:
 
-                    *3[SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py) --> This file is used to create the queries
+                    *2[SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py) --> This file is used to create the queries
 
                     ===> Dependencies above = [main_pipeline.py](main_pipeline.py), Dependencies below = [data_generator.py](./Data_generator/data_generator.py)
 
@@ -146,7 +146,7 @@ A screen will be displayed in which each period the user will be able to see:
 
          1. Files inside:
 
-            4*[DataEditingVariableSetup.py](./PD_LGD_EAD_Modelling/DataEditingVariableSetup.py) ---> It basically transforms the variables to be that we have from our customers to be usef for regressions and Machine Learning models.
+            *3[DataEditingVariableSetup.py](./PD_LGD_EAD_Modelling/DataEditingVariableSetup.py) ---> It basically transforms the variables to be that we have from our customers to be usef for regressions and Machine Learning models.
 
             ===> Dependencies above = [PD_estimation.py](./PD_LGD_EAD_Modelling/PD/PD_estimation.py), Dependencies below = [customer_data_for_models.csv](./Data_generator/Generated_data/customers_data_for_models.csv)
 
@@ -192,7 +192,7 @@ A screen will be displayed in which each period the user will be able to see:
 
                1. Files inside:
 
-                    5*[Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py) ---> In this file we introduce a Gaussian factor copula model to estimate the joint default behavior of the customers, we estimate the join probabilities of default and the IRB requirements that should be hold for each customer if the loan is lend to them
+                    *4[Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py) ---> In this file we introduce a Gaussian factor copula model to estimate the joint default behavior of the customers, we estimate the join probabilities of default and the IRB requirements that should be hold for each customer if the loan is lend to them
 
                     ===> Dependencies above = [main_pipeline.py](main_pipeline.py), Dependencies below = ([customer_data_for_queries.csv](./Data_generator/Generated_data/customers_data_for_queries.csv), [PD_estimation.py](./PD_LGD_EAD_Modelling/PD/PD_estimation.py), [LGD_estimation.py](./PD_LGD_EAD_Modelling/LGD/LGD_estimation.py))
 
