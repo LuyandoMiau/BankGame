@@ -11,6 +11,7 @@ Still to do for this version:
 8. Make a 7 point scale rating for customers (where the last rating is default = 1)
 9. Types of data, customer data, behavioral data, macro data, expert data to get PDs and LGDs
 10. Re-adapt the data using the SQL queries as support for visualization fo the data, to handle outliers.
+11. Check for correlation between variables and check if it makes sense to apply a LASSO regression before applying other ones, to determine the variables that are significant and actually to be used in the final regression/model.
 
 
 WORKING ON: 1, 7
