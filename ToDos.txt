@@ -8,6 +8,9 @@ Still to do for this version:
 5. Include a more detailed way to calculate interest rates given what you learned in the Credit Risk Advanced Course
 6. Add also maybe and Income Statement and maybe a Cash Flow
 7. Constantly update README.md
+8. Make a 7 point scale rating for customers (where the last rating is default = 1)
+9. Types of data, customer data, behavioral data, macro data, expert data to get PDs and LGDs
+10. Re-adapt the data using the SQL queries as support for visualization fo the data, to handle outliers.
 
 
 WORKING ON: 1, 7
