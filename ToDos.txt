@@ -12,6 +12,10 @@ Still to do for this version:
 9. Types of data, customer data, behavioral data, macro data, expert data to get PDs and LGDs
 10. Re-adapt the data using the SQL queries as support for visualization fo the data, to handle outliers.
 11. Check for correlation between variables and check if it makes sense to apply a LASSO regression before applying other ones, to determine the variables that are significant and actually to be used in the final regression/model.
+12. Under the EBA regulations, only Through The Cycle (TTC) PDs may be used to compute the IRB funds requirements, make sure of this!
+13. Try also calibrating the models for the PD and LGD
+14. Consider estimation rules of PDs for Low Default Portfolios
+15. Calculate, apart from the EL, the Value at Risk (VaR), the Unexpected Loss (UL) and the Expected Shortfall (ES)
 
 
 WORKING ON: 1, 7
