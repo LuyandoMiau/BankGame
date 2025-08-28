@@ -46,24 +46,41 @@ A screen will be displayed in which each period the user will be able to see:
     [main_pipeline.py](main_pipeline.py) ---> The only file that needs to be run in order to run the Game, this one also includes the inputs that can be adjusted to change the data creation and the game conditions.
 
     ===> Dependencies above = NONE, Dependencies below = ([BankStatements.py](./Bank_Statements/Original_setup/BankStatements.py), [data_generator.py](./Data_generator/data_generator.py), [SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py), [DataEditingVariableSetup.py](./PD_LGD_EAD_Modelling/DataEditingVariableSetup.py), [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py))
-
-    [.gitignore](.gitignore) ---> This file tells Git which files or folders to ignore and not track or commit in the repository (like temporary files, logs, or environment configs).
+- [BankGame](#bankgame)
+    - [Main description](#main-description)
+    - [Data structure](#data-structure)
+  - [STILL TO BE IMPLEMENTED:](#still-to-be-implemented)
+    - [Data reproduction](#data-reproduction)
+    - [GUI](#gui)
+  - [STRUCTURED MAP OF DEPENDENCIES](#structured-map-of-dependencies)
 
 2. Folders inside: 
 
-   1. Bank_Statements ---> To generate the Bank original (and dynamic) set of Statements throughout the game, like "Balance Sheet", "Income Statemet" and "Cash Flow".
+   1. Bank_Statements ---> To generate the Bank original (and dynamic) set of Statements throughout the game, like "Balance Sheet", "Income Statemet" and "Cash Flow".- [BankGame](#bankgame)
+    - [Main description](#main-description)
+    - [Data structure](#data-structure)
+- [BankGame](#bankgame)
+    - [Main description](#main-description)
+    - [Data structure](#data-structure)
+  - [STILL TO BE IMPLEMENTED:](#still-to-be-implemented)
+    - [Data reproduction](#data-reproduction)
+    - [GUI](#gui)
+  - [STRUCTURED MAP OF DEPENDENCIES](#structured-map-of-dependencies)
 
-        1. Folders inside:
 
-           1. Original_setup ---> Original balance sheet setup
+1. Folders inside:
 
-                1. Files inside:
+   1. Bank_Statements
 
-                    *5[BankStatements.py](./Bank_Statements/Original_setup/BankStatements.py) ---> Contains the original set up of assets, liabilities and equity of the bank 
+        1. Original_setup ---> Original balance sheet setup
 
-                    ===> Dependencies above = [main_pipeline.py](main_pipeline.py), Dependencies below = NONE
+            1. Files inside:
 
-           2. Dynamics ---> Here will be the Balance sheet recalculated, how? Each period the loans approved will have an impact on the balance sheet. Moreover at the end of each period, given the changing dynamics of the customers with loans in the bank and economic changes, will the Balance Sheet be affected and thus recalculated.V
+                *5[BankStatements.py](./Bank_Statements/Original_setup/BankStatements.py) ---> Contains the original set up of assets, liabilities and equity of the bank 
+
+                ===> Dependencies above = [main_pipeline.py](main_pipeline.py), Dependencies below = NONE
+
+        2. Dynamics ---> Here will be the Balance sheet recalculated, how? Each period the loans approved will have an impact on the balance sheet. Moreover at the end of each period, given the changing dynamics of the customers with loans in the bank and economic changes, will the Balance Sheet be affected and thus recalculated.
 
     2. Data_generator ---> To generate the data of the costumers
         
