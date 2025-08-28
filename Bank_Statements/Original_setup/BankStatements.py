@@ -48,96 +48,187 @@ class BankThreeMainStatements:
     """This first function is defining the intial state of the bank's balance sheet.
     It sets up the initial deposits, reserve requirements, interest rates, and other key financial parameters.
     The __init__() function initializes the balance sheet with starting values, such as deposits, reserves, and interest rates.
-    This ensures that the balance sheet is ready for use in the simulation or game, providing a structured starting point for financial operations."""
-    
-    def __init__(self, initial_deposits=1_000_000, reserve_ratio=0.1):
-        
-        # Initialize the balance sheet with starting values.
+    This ensures that the balance sheet is ready for use in the simulation or game, providing a structured starting point for financial operations.
+    The inputs can be adjusted to simulate different scenarios or bank policies.
+    Period, outstanding loans and non performing loans are set to zero at the beginning of the game, but they will dynamically change as the game progresses."""
+    def __init__(self, 
+                 reserve_ratio=0.1, 
+                 reference_rate=0.02,
+                 saving_rate=0.01,
+                 lending_rate_base=0.04,
+                 initial_deposits=1_000_000,
+                 initial_equity=100_000,
+                 retained_earnings=100_000):
+
+        #self is used to represent the instance of the class. It allows us to access attributes and methods associated with the class in Python.
+
+        # ----- Initialize the balance sheet with starting values, paramters that will affect the assets and liabilities of the bank.
         self.period = 0  # Track the current period (e.g., year or quarter)
         self.reserve_ratio = reserve_ratio  # Required reserve ratio set by regulations
-        self.reference_rate = 0.02  # Central bank reference rate (2%)
-        self.saving_rate = 0.01     # Interest rate paid on savings (1%)
-        self.lending_rate_base = 0.04  # Base lending rate before risk margin (4%)
-
+        self.reference_rate = reference_rate  # Central bank reference rate (2%)
+        self.saving_rate = saving_rate  # Interest rate paid on savings (1%)
+        self.lending_rate_base = lending_rate_base  # Base lending rate before risk margin (4%)
+        self.margin_rate = self.lending_rate_base - self.saving_rate  # Margin between lending and saving rates (3%)
+        
+        # ----- Here we will define the initial amounts for deposits, reserves, loans, and equity.
+        
+        # Deposits are the liabilities of the bank, as they represent money owed to customers.
         self.deposits = initial_deposits  # Total customer deposits
+        
+        # Reserves are a portion of deposits that the bank must hold and cannot lend out.
+        # Initially, the bank holds exactly the required reserves.
+        # The bank earns no interest on reserves, but they are crucial for liquidity and regulatory compliance.
         self.required_reserve = self.reserve_ratio * self.deposits  # Minimum reserves required by law
-        self.reserves = self.required_reserve  # Actual reserves held by the bank
-        self.available_for_loans = self.deposits - self.required_reserve  # Funds available to lend
+        self.reserves = self.required_reserve  # Actual reserves held by the bank at the start
+        
+        # Loans are the assets of the bank, as they represent money owed to the bank by borrowers.
+        # We will have two types of loans: performing loans and non-performing loans.
+        # Performing loans are the ones that are being paid on time, while non-performing loans are the ones that are in default.
+        # At the beginning of the game, there are no loans yet.
         self.outstanding_loans = 0  # Total amount of performing loans
         self.non_performing_loans = 0  # Total amount of non-performing (defaulted) loans
-        self.bank_equity = 100_000  # Initial capital provided by bank owners
+        
+        # Retained earnings and equity represent the bank's own capital.
+        # Retained earnings are profits that have been reinvested in the bank rather than paid out as dividends.
+        self.retained_earnings = retained_earnings  # Profits reinvested in the bank
+        self.bank_equity = initial_equity + retained_earnings  # Initial capital provided by bank owners
+        
+        # Reserves are the cash that the bank holds to meet withdrawal demands and regulatory requirements
+        self.available_for_loans = self.deposits - self.reserves  # Funds available to lend
 
+    """ The following functions define the total assets and total liabilities and equity of the bank."""
     def total_assets(self):
         # Calculate total assets: reserves + loans (performing and non-performing)
-        return self.reserves + self.outstanding_loans + self.non_performing_loans
+        return self.reserves + self.available_for_loans + self.outstanding_loans + self.non_performing_loans + self.bank_equity
 
     def total_liabilities_and_equity(self):
         # Calculate total liabilities and equity: deposits + bank equity
         return self.deposits + self.bank_equity
-
-    def balance_sheet_table(self):
-        # Prepare a table showing assets and liabilities/equity side by side for display.
-        # This helps visualize the balance sheet and ensures assets = liabilities + equity.
+    
+    """ The following functions prepare tables for the balance sheet and income statement."""
+    def balance_sheet_table(self): # Prepare a table showing assets and liabilities/equity side by side for display. # This helps visualize the balance sheet and ensures assets = liabilities + equity.
+        
+        # Assets categories and values
         assets = [
             ["Cash Reserves", f"{self.reserves:,.2f}"],
+            ["Funds Available for Loans", f"{self.available_for_loans:,.2f}"],
             ["Outstanding Loans", f"{self.outstanding_loans:,.2f}"],
             ["Non-performing Loans", f"{self.non_performing_loans:,.2f}"],
-            ["Total Assets", f"{self.total_assets():,.2f}"],
+            ["Money from Equity", f"{self.bank_equity:,.2f}"],
         ]
+        
+        # Liabilities and Equity categories and values
         liabilities = [
             ["Deposits (Savings)", f"{self.deposits:,.2f}"],
             ["Bank Equity", f"{self.bank_equity:,.2f}"],
-            ["Total Liabilities & Equity", f"{self.total_liabilities_and_equity():,.2f}"],
         ]
-
+        
         # Combine assets and liabilities for side-by-side display
         max_rows = max(len(assets), len(liabilities))
         table = []
+        
+        # Calculate sums for totals
+        sum_assets = 0
+        sum_liabilities = 0
+        
+        # Loop through the maximum number of rows to ensure both sides are displayed completely
         for i in range(max_rows):
             asset_row = assets[i] if i < len(assets) else ["", ""]
             liability_row = liabilities[i] if i < len(liabilities) else ["", ""]
             table.append([asset_row[0], asset_row[1], liability_row[0], liability_row[1]])
+            if i < len(assets):
+                sum_assets += float(asset_row[1].replace(",", ""))
+            if i < len(liabilities):
+                sum_liabilities += float(liability_row[1].replace(",", ""))
+                
+        # Add the net total assets and total liabilities & equity at the bottom
+        table.append([
+            "Total Assets", f"{sum_assets:,.2f}",
+            "Total Liabilities & Equity", f"{sum_liabilities:,.2f}"
+        ])
+        
+        # Return the formatted table
         return table
 
+    """ The income statement function is a proposed structure for future implementation.
+    It outlines how income and expenses will be tracked, but currently all values are set to zero.
+    This function can be expanded as the simulation/game progresses to reflect actual financial performance.
+    """
     def income_statement_table(self):
-        # Prepare a table for the income statement (all values zero at start).
-        # This can be expanded as the simulation/game progresses.
+        # Income categories and values
         income = [
             ["Interest Income from Loans", "0.00"],
             ["Other Income", "0.00"],
         ]
+        
+        # Expense categories and values
         expenses = [
             ["Interest Paid on Deposits", "0.00"],
             ["Loan Loss Provisions", "0.00"],
+            ["Taxes on Income", "0.00"],
             ["Other Expenses", "0.00"],
         ]
+        
+        # Net Income (total income - total expenses)
         net_income = [["Net Income", "0.00"]]
-
-        # Combine income and expenses for side-by-side display
-        max_rows = max(len(income), len(expenses))
+        
+        # To display neatly, we merge the lists in a structured way
+        max_len = max(len(income), len(expenses))
         table = []
-        for i in range(max_rows):
+        for i in range(max_len):
             income_row = income[i] if i < len(income) else ["", ""]
             expense_row = expenses[i] if i < len(expenses) else ["", ""]
             table.append([income_row[0], income_row[1], expense_row[0], expense_row[1]])
-        # Add net income at the end
+        
+        # Add the net income at the bottom
         table.append([net_income[0][0], net_income[0][1], "", ""])
         return table
+    
+    """ This table will define the cash flow statement in the future.
+    It will track simple cashflows from operations, investments, loans, deposits, and financing."""
+    def cash_flow_statement_table(self):
+        # Prepare a table for the cash flow statement (all values zero at start).
+        # This can be expanded as the simulation/game progresses.
+        cash_flows = [
+            
+            # Dynamically we will calculate it as: new deposits, loan repayments, interest income
+            ["Cash Inflows", "0.00"], # Placeholder for future cash inflows
+            
+            # Dynamically we will calculate it as: withdrawals, defaults, interest on deposits
+            ["Cash Outflows", "0.00"], # Placeholder for future cash outflows
+            
+            # Net cash flow is inflows minus outflows
+            ["Net Cash Flow", "0.00"], # Placeholder for net cash flow calculation
+        ]
+        
+        # We will create a table for display
+        table = []
+        for row in cash_flows:
+            table.append([row[0], row[1]])
+        return table
 
+
+
+""" The main function demonstrates how to create an instance of the BankThreeMainStatements class
+and display the balance sheet and income statement using the tabulate library for formatting."""
 def main():
     # Create an instance of the BankThreeMainStatements class
     bs = BankThreeMainStatements()
     print("=== Balance Sheet ===")
     headers = ["Assets", "Amount (€)", "Liabilities & Equity", "Amount (€)"]
     print(tabulate(bs.balance_sheet_table(), headers=headers, tablefmt="fancy_grid"))
+    
+    # Check if the balance sheet balances (assets = liabilities + equity)
+    if abs(bs.total_assets() - bs.total_liabilities_and_equity()) > 0.01:
+        print("\nWARNING: Balance sheet does not balance!")
 
     print("\n=== Income Statement (Proposed) ===")
     headers_is = ["Income", "Amount (€)", "Expenses", "Amount (€)"]
     print(tabulate(bs.income_statement_table(), headers=headers_is, tablefmt="fancy_grid"))
-
-    # Check if the balance sheet balances (assets = liabilities + equity)
-    if abs(bs.total_assets() - bs.total_liabilities_and_equity()) > 0.01:
-        print("\nWARNING: Balance sheet does not balance!")
+    
+    print("\n=== Cash Flow Statement (Proposed) ===")
+    headers_cf = ["Cash Flow Item", "Amount (€)"]
+    print(tabulate(bs.cash_flow_statement_table(), headers=headers_cf, tablefmt="fancy_grid"))
 
 if __name__ == "__main__":
     main()
