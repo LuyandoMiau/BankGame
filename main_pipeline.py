@@ -1,15 +1,18 @@
+"""Main pipeline script to run a series of data generation and modeling scripts in sequence."""
+
+# ZERO: Set up environment and dependencies
+# Before running this script, ensure that all dependencies are installed. RUN this first in the terminal:
+# python dependencies_manager.py
+
+# FIRST, packages needed for running the scripts
 import subprocess
 import os
 
-# HERE A SPACE TO DEFINE THE PARAMETERS FOR THE GAME, BUT NOT YET
+# # Load configuration from config.yml with the parameters needed
+# with open("config.yml", "r") as f:
+#     config = yaml.safe_load(f)
 
-# Parameters affecting each of the scripts here
-# script_params = {
-#     "Data_generator/data_generator.py": {"num_samples": 1000},
-#     "Data_generator/SQL_queries/SQL_queries_Data.py": {"db_name": "bank_game"},
-# }
-
-# Define the paths to the scripts in the order they need to run
+# SECOND, define and run the scripts in order
 scripts = [
     "Data_generator/data_generator.py",
     "Data_generator/SQL_queries/SQL_queries_Data.py",
@@ -18,7 +21,7 @@ scripts = [
     "Bank_Statements/Original_setup/BankStatements.py" # Cannot be run properly, check why
 ]
 
-# Run each script
+# THIRD, execute each script in order
 for script in scripts:
     abs_path = os.path.abspath(script)
     print(f"\n🚀 Running {abs_path}")

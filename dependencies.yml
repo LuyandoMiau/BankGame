@@ -1,0 +1,33 @@
+data_generator:
+  description: "Packages required for generating synthetic customer data."
+  packages:
+    - pandas
+    - numpy
+    - random
+
+copula_models:
+  description: "Packages required for Gaussian copula and risk modeling."
+  packages:
+    - scipy
+    - scikit-learn
+    - statsmodels
+    - tensorflow
+
+sql_queries:
+  description: "Packages required for database interaction."
+  packages:
+    - sqlite3
+
+bank_statements:
+  description: "Packages required for financial statements and reporting."
+  packages:
+    - tabulate
+    - matplotlib
+
+general:
+  description: "Packages required everywhere."
+  packages:
+    - pyyaml
+    - tqdm
+    - sys
+    - os

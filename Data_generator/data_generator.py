@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 import random
 
-
 """ Functions to generate the data """
 def data_generator(number_of_customers):
     # Generate an empty list to store the customer data
@@ -97,9 +96,15 @@ def data_generator(number_of_customers):
 """ Generate the data for a specified number of customers """
 
 # INPUTS THAT CAN BE CHANGED ########################################################################################
-number_of_customers_1 = 1000
-saving_path_statistics = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data_for_queries.csv'
-saving_path_models = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data_for_models.csv'
+# Load configuration from config.yml with the parameters needed
+import yaml
+with open("config.yml", "r") as f:
+    config = yaml.safe_load(f)
+    
+# Load parameters from the config file
+number_of_customers_1 = config["number_of_customers_1"] # Number of customers to be generated
+saving_path_statistics = config["saving_path_statistics"]
+saving_path_models = config["saving_path_models"]
 #####################################################################################################################
 
 def main():
