@@ -1,6 +1,7 @@
 """Main pipeline script to run a series of data generation and modeling scripts in sequence."""
 
 # ZERO: Set up environment and dependencies
+# THIS IS TO BE DONE ONLY ONCE
 # Before running this script, ensure that all dependencies are installed. RUN this first in the terminal:
 # python dependencies_manager.py
 
