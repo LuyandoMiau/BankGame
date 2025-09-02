@@ -2,6 +2,14 @@
 
 Click command + shift + v to see the preview, it requires the VSC extension "Markdown All in One"
 
+- [BankGame](#bankgame)
+    - [Main description](#main-description)
+    - [Data structure](#data-structure)
+  - [STILL TO BE IMPLEMENTED:](#still-to-be-implemented)
+    - [Data reproduction](#data-reproduction)
+    - [GUI](#gui)
+  - [STRUCTURED MAP OF DEPENDENCIES](#structured-map-of-dependencies)
+
 ### Main description
 
 This project aims to create an interactive game in which the user will be playing as a banker, will decide whether or not to accept loans based on credit risks measures for each individual (PDs, LGDs, EADs, EL), regulator amounts to be considered (joint probabilities, legal provisions under regulation, capital requirements), calculated pricing (suggested calculated interest rates), and amount of cash available for the bank (stored in a balance sheet).
@@ -49,32 +57,11 @@ A screen will be displayed in which each period the user will be able to see:
 
     [dependencies.yml](dependencies.yml) --> Here a list of all the packages needed for the code to run
 
-    [dependencies_manager.yml](dependencies_manager.py) --> Here some functions to check that the dependencies are install in the computer of the user. python dependencies_manager.py should be input ONLY ONCE in the terminal at the very beginning to ensure that the packages needed are installed.
+    [dependencies_manager.yml](dependencies_manager.py) --> Here some functions to check that the dependencies are install in the computer of the user. python dependencies_manager.py should be input ONLY ONCE in the terminal at the very beginning to ensure that the packages needed are installed.V
 
-    ===> Dependencies above = NONE, Dependencies below = ([BankStatements.py](./Bank_Statements/Original_setup/BankStatements.py), [data_generator.py](./Data_generator/data_generator.py), [SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py), [DataEditingVariableSetup.py](./PD_LGD_EAD_Modelling/DataEditingVariableSetup.py), [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py))
-- [BankGame](#bankgame)
-    - [Main description](#main-description)
-    - [Data structure](#data-structure)
-  - [STILL TO BE IMPLEMENTED:](#still-to-be-implemented)
-    - [Data reproduction](#data-reproduction)
-    - [GUI](#gui)
-  - [STRUCTURED MAP OF DEPENDENCIES](#structured-map-of-dependencies)
+    ===> Dependencies above = NONE, Dependencies below = ([BankStatements.py](./Bank_Statements/Original_setup/BankStatements.py), [data_generator.py](./Data_generator/data_generator.py), [SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py), [DataEditingVariableSetup.py](./PD_LGD_EAD_Modelling/DataEditingVariableSetup.py), [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/
 
 2. Folders inside: 
-
-   1. Bank_Statements ---> To generate the Bank original (and dynamic) set of Statements throughout the game, like "Balance Sheet", "Income Statemet" and "Cash Flow".- [BankGame](#bankgame)
-    - [Main description](#main-description)
-    - [Data structure](#data-structure)
-- [BankGame](#bankgame)
-    - [Main description](#main-description)
-    - [Data structure](#data-structure)
-  - [STILL TO BE IMPLEMENTED:](#still-to-be-implemented)
-    - [Data reproduction](#data-reproduction)
-    - [GUI](#gui)
-  - [STRUCTURED MAP OF DEPENDENCIES](#structured-map-of-dependencies)
-
-
-1. Folders inside:
 
    1. Bank_Statements
 
