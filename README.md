@@ -45,6 +45,12 @@ A screen will be displayed in which each period the user will be able to see:
 
     [main_pipeline.py](main_pipeline.py) ---> The only file that needs to be run in order to run the Game, this one also includes the inputs that can be adjusted to change the data creation and the game conditions.
 
+    [config.yml](config.yml) --> Here all the parameters that might be changed to change the game results
+
+    [dependencies.yml](dependencies.yml) --> Here a list of all the packages needed for the code to run
+
+    [dependencies_manager.yml](dependencies_manager.py) --> Here some functions to check that the dependencies are install in the computer of the user. python dependencies_manager.py should be input ONLY ONCE in the terminal at the very beginning to ensure that the packages needed are installed.
+
     ===> Dependencies above = NONE, Dependencies below = ([BankStatements.py](./Bank_Statements/Original_setup/BankStatements.py), [data_generator.py](./Data_generator/data_generator.py), [SQL_queries_Data.py](./Data_generator/SQL_queries/SQL_queries_Data.py), [DataEditingVariableSetup.py](./PD_LGD_EAD_Modelling/DataEditingVariableSetup.py), [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py))
 - [BankGame](#bankgame)
     - [Main description](#main-description)
