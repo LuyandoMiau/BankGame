@@ -6,6 +6,11 @@ import pandas as pd
 import numpy as np
 import random
 
+""" Load configuration from config.yml with the parameters needed """
+import yaml
+with open("config.yml", "r") as f:
+    config = yaml.safe_load(f)
+
 """ Functions to generate the data """
 def data_generator(number_of_customers):
     # Generate an empty list to store the customer data
@@ -15,14 +20,14 @@ def data_generator(number_of_customers):
         
         # ---------------- X-Variables -------------------------------#
         ##### Variables not directly dependent on other variables #####
-        name = f"name{i}" # names are created according to the index "i"
-        age = random.randint(30, 60) # As the maximum attainable age that we want in the game is 65
-        education_level = random.choices(["high school or lower", "ausbildung", "bachelor degree", "post graduate degree"],  weights=[0.3, 0.3, 0.3, 0.1], k=1)[0]
+        name = f"{config['default_name_prefix']}{i}" # names are created according to the index "i"
+        age = random.randint(config['min_age'], config['max_age']) # As the maximum attainable age that we want in the game is 60
+        education_level = random.choices(config['education']['levels'],  weights=config['education']['weights'], k=1)[0]
         # Number of unpaid past credits
-        past_credits = random.choices([0, 1, 2, 3], weights=[0.6, 0.3, 0.08, 0.02], k=1)[0] # This emphasizes 0 and 1 unpaid credits
+        past_credits = random.choices(config['past_credits']['levels'], weights=config['past_credits']['weights'], k=1)[0] # This emphasizes 0 and 1 unpaid credits
         # Number of dependents
-        dependents = random.choices([0, 1, 2, 3, 4], weights=[0.6, 0.3, 0.06, 0.03, 0.01], k=1)[0] # This emphasizes 0 and 1 unpaid credits
-        
+        dependents = random.choices(config['dependents']['levels'], weights=config['dependents']['weights'], k=1)[0] # This emphasizes 0 and 1 unpaid credits
+
         ##### Variables directly dependent on other variables #####
         # Generate profession based on education level
         profession = generate_profession(education_level)
@@ -96,11 +101,7 @@ def data_generator(number_of_customers):
 """ Generate the data for a specified number of customers """
 
 # INPUTS THAT CAN BE CHANGED ########################################################################################
-# Load configuration from config.yml with the parameters needed
-import yaml
-with open("config.yml", "r") as f:
-    config = yaml.safe_load(f)
-    
+ 
 # Load parameters from the config file
 number_of_customers_1 = config["number_of_customers_1"] # Number of customers to be generated
 saving_path_statistics = config["saving_path_statistics"]

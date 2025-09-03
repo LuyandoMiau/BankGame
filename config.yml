@@ -1,6 +1,269 @@
-# Parameters per script
+####################################### Data generation parameters #########################################
 
-# Data_generator/data_generator.py
+### ------- Data_generator/data_generator.py
+
+# General parameters ---->
+
 number_of_customers_1: 1000
 saving_path_statistics: '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data_for_queries.csv'
 saving_path_models: '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data_for_models.csv'
+
+# Parameters for variables generation ---->
+
+# Name related
+default_name_prefix: "name"
+
+# Age related
+min_age: 30
+max_age: 65
+
+# Education related
+education: 
+  levels:
+    - "high school or lower"
+    - "ausbildung"
+    - "bachelor degree"
+    - "post graduate degree"
+  weights:
+    - 0.3
+    - 0.3
+    - 0.3
+    - 0.1
+
+# Past credits related
+past_credits:
+  levels:
+    - 0
+    - 1
+    - 2
+    - 3
+  weights:
+    - 0.6
+    - 0.3
+    - 0.08
+    - 0.02
+
+# Dependents related
+dependents:
+  levels:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+  weights:
+    - 0.6
+    - 0.3
+    - 0.06
+    - 0.03
+    - 0.01
+
+
+### ------- Data_generator/data_generator_functions.py
+
+# Parameters for variables generation ---->
+
+# Profession related
+professions:
+  LowSkilled:
+    levels:
+      - "LowSkilled"
+      - "Unemployed_LowSkilled"
+    weights:
+      - 0.9
+      - 0.1
+  MediumSkilled:
+    levels:
+      - "MediumSkilled"
+      - "Unemployed_MediumSkilled"
+    weights:
+      - 0.9
+      - 0.1
+  HighSkilled:
+    levels:
+      - "HighSkilled"
+      - "Unemployed_HighSkilled"
+    weights:
+      - 0.9
+      - 0.1
+
+# Working sector related
+working_sectors:
+  LowSkilled:
+    sectors:
+      - "Construction"
+      - "Agriculture"
+      - "Manufacturing"
+      - "Transportation"
+      - "Cleaning Services"
+    weights:
+      - 0.2
+      - 0.3
+      - 0.2
+      - 0.2
+      - 0.1
+  MediumSkilled:
+    sectors:
+      - "Nursing"
+      - "Teacher"
+      - "IT Support"
+      - "Electrician"
+      - "Artist"
+    weights:
+      - 0.2
+      - 0.3
+      - 0.2
+      - 0.2
+      - 0.1
+  HighSkilled:
+    sectors:
+      - "Finance"
+      - "Engineering"
+      - "Research"
+      - "Consultant"
+      - "Doctor"
+    weights:
+      - 0.2
+      - 0.3
+      - 0.2
+      - 0.2
+      - 0.1
+
+# # Income related
+# income_parameters:
+#   [LowSkilled, Unemployed_LowSkilled]:
+#       [30-35]: { mean: 1000, std_dev: 200, max_income: 2000 }
+#       [36-40]: { mean: 1200, std_dev: 200, max_income: 2400 }
+#       [41-45]: { mean: 1500, std_dev: 250, max_income: 3000 }
+#       [46-50]: { mean: 1800, std_dev: 300, max_income: 3600 }
+#       [51-55]: { mean: 2000, std_dev: 350, max_income: 4000 }
+#       [56-60]: { mean: 2200, std_dev: 400, max_income: 4300 }
+#       [61-65]: { mean: 2400, std_dev: 600, max_income: 4500 }
+#   [MediumSkilled, Unemployed_MediumSkilled]:
+#       [30-35]: { mean: 1800, std_dev: 300, max_income: 4000 }
+#       [36-40]: { mean: 2300, std_dev: 400, max_income: 5000 }
+#       [41-45]: { mean: 2600, std_dev: 500, max_income: 6000 }
+#       [46-50]: { mean: 3000, std_dev: 600, max_income: 7000 }
+#       [51-55]: { mean: 3500, std_dev: 800, max_income: 8000 }
+#       [56-60]: { mean: 4000, std_dev: 800, max_income: 9000 }
+#       [61-65]: { mean: 5000, std_dev: 1000, max_income: 10000 }
+#   [HighSkilled, Unemployed_HighSkilled]:
+#       [30-35]: { mean: 3000, std_dev: 500, max_income: 10000 }
+#       [36-40]: { mean: 4500, std_dev: 700, max_income: 15000 }
+#       [41-45]: { mean: 6000, std_dev: 1000, max_income: 20000 }
+#       [46-50]: { mean: 7000, std_dev: 1500, max_income: 25000 }
+#       [51-55]: { mean: 8000, std_dev: 2000, max_income: 30000 }
+#       [56-60]: { mean: 9000, std_dev: 3000, max_income: 40000 }
+#       [61-65]: { mean: 10000, std_dev: 4000, max_income: 50000 }
+
+
+
+# Expenditure related
+expenditure_params:
+  low_income_params: 
+    dependents:
+      - [0.5, 0.7, 1.5]
+      - [0.7, 0.8, 1.5]
+      - [0.8, 0.9, 1.5]
+      - [0.9, 1.0, 1.5]
+      - [1.0, 1.1, 1.5]
+  high_income_params: 
+    dependents:
+      - [0.3, 0.5, 1.2]
+      - [0.4, 0.6, 1.2]
+      - [0.5, 0.7, 1.2]
+      - [0.6, 0.8, 1.2]
+      - [0.7, 0.9, 1.2]
+
+# Credit characteristics related
+credit_characteristics:
+  duration_loan:
+    duration_months:
+      - 12
+      - 24
+      - 36
+      - 48
+      - 60
+    weights:
+      - 0.2
+      - 0.3
+      - 0.2
+      - 0.2
+      - 0.1
+  percentage_monthly_income:
+    max: 1.0
+    min: 0.2
+  types_of_loan:
+    - "mortgages"
+    - "auto loans"
+    - "simple loans"
+
+# Collateral related
+collateral:
+  types:
+    - "house"
+    - "car"
+    - "liquid assets"
+    - "none"
+  thresholds:
+    - 50000
+    - 20000
+    - 0
+    - 0
+  amount_per_type:
+    HighSkilled:
+      per_no_collateral: 0.10
+      Boundaries: [10000, 80000]
+    MediumSkilled:
+      per_no_collateral: 0.20
+      Boundaries: [10000, 50000]
+    LowSkilled:
+      per_no_collateral: 0.35
+      Boundaries: [5000, 25000]
+
+# Estimated seizable assets related
+seizable_assets_multiplier:
+  HighSkilled: 1.2
+  MediumSkilled: 1.0
+  LowSkilled: 0.8
+
+# y-variable related
+y_variable:
+  risk_settings:
+    Unemployed_LowSkilled:
+      base: 0.15
+      weights: [0.30, 0.6, 0.4] # base probability of default and weights (past credits, debt to income before credit, credit to income)
+    LowSkilled:
+      base: 0.08
+      weights: [0.20, 0.5, 0.3] # base probability of default and weights (past credits, debt to income before credit, credit to income)
+    Unemployed_MediumSkilled:
+      base: 0.12
+      weights: [0.30, 0.5, 0.3] # base probability of default and weights (past credits, debt to income before credit, credit to income)
+    MediumSkilled:
+      base: 0.05
+      weights: [0.20, 0.45, 0.25] # base probability of default and weights (past credits, debt to income before credit, credit to income)
+    Unemployed_HighSkilled:
+      base: 0.09
+      weights: [0.30, 0.45, 0.25] # base probability of default and weights (past credits, debt to income before credit, credit to income)
+    HighSkilled:
+      base: 0.02
+      weights: [0.20, 0.4, 0.2] # base probability of default and weights (past credits, debt to income before credit, credit to income)
+  sector_risk_modifier:
+    LowSkilled:
+      Construction: 0.03
+      Agriculture: 0.02
+      Manufacturing: 0.01
+      Transportation: 0.025
+      Cleaning Services: 0.04
+    MediumSkilled:
+      Nursing: -0.01
+      Teacher: -0.015
+      IT Support: 0.0
+      Electrician: 0.01
+      Artist: 0.03
+    HighSkilled:
+      Finance: -0.02
+      Engineering: -0.015
+      Research: -0.01
+      Consultant: 0.0
+      Doctor: -0.025
