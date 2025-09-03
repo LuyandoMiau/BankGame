@@ -156,8 +156,6 @@ working_sectors:
 #       [56-60]: { mean: 9000, std_dev: 3000, max_income: 40000 }
 #       [61-65]: { mean: 10000, std_dev: 4000, max_income: 50000 }
 
-
-
 # Expenditure related
 expenditure_params:
   low_income_params: 
