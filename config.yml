@@ -14,8 +14,8 @@ saving_path_models: '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_g
 default_name_prefix: "name"
 
 # Age related
-min_age: 30
-max_age: 65
+age_min: 30
+age_max: 65
 
 # Education related
 education: 
@@ -129,32 +129,27 @@ working_sectors:
       - 0.2
       - 0.1
 
-# # Income related
-# income_parameters:
-#   [LowSkilled, Unemployed_LowSkilled]:
-#       [30-35]: { mean: 1000, std_dev: 200, max_income: 2000 }
-#       [36-40]: { mean: 1200, std_dev: 200, max_income: 2400 }
-#       [41-45]: { mean: 1500, std_dev: 250, max_income: 3000 }
-#       [46-50]: { mean: 1800, std_dev: 300, max_income: 3600 }
-#       [51-55]: { mean: 2000, std_dev: 350, max_income: 4000 }
-#       [56-60]: { mean: 2200, std_dev: 400, max_income: 4300 }
-#       [61-65]: { mean: 2400, std_dev: 600, max_income: 4500 }
-#   [MediumSkilled, Unemployed_MediumSkilled]:
-#       [30-35]: { mean: 1800, std_dev: 300, max_income: 4000 }
-#       [36-40]: { mean: 2300, std_dev: 400, max_income: 5000 }
-#       [41-45]: { mean: 2600, std_dev: 500, max_income: 6000 }
-#       [46-50]: { mean: 3000, std_dev: 600, max_income: 7000 }
-#       [51-55]: { mean: 3500, std_dev: 800, max_income: 8000 }
-#       [56-60]: { mean: 4000, std_dev: 800, max_income: 9000 }
-#       [61-65]: { mean: 5000, std_dev: 1000, max_income: 10000 }
-#   [HighSkilled, Unemployed_HighSkilled]:
-#       [30-35]: { mean: 3000, std_dev: 500, max_income: 10000 }
-#       [36-40]: { mean: 4500, std_dev: 700, max_income: 15000 }
-#       [41-45]: { mean: 6000, std_dev: 1000, max_income: 20000 }
-#       [46-50]: { mean: 7000, std_dev: 1500, max_income: 25000 }
-#       [51-55]: { mean: 8000, std_dev: 2000, max_income: 30000 }
-#       [56-60]: { mean: 9000, std_dev: 3000, max_income: 40000 }
-#       [61-65]: { mean: 10000, std_dev: 4000, max_income: 50000 }
+# Income related
+# Assuming unemployement money is 50% of the income of the employed in the same skill category
+income_params:
+  LowSkilled:
+    min: 1000
+    max: 5000
+  Unemployed_LowSkilled:
+    min: 500
+    max: 2500
+  MediumSkilled:
+    min: 1200
+    max: 10000
+  Unemployed_MediumSkilled:
+    min: 600
+    max: 5000
+  HighSkilled:
+    min: 1600
+    max: 20000
+  Unemployed_HighSkilled:
+    min: 800
+    max: 10000
 
 # Expenditure related
 expenditure_params:

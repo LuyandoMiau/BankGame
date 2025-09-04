@@ -21,7 +21,7 @@ def data_generator(number_of_customers):
         # ---------------- X-Variables -------------------------------#
         ##### Variables not directly dependent on other variables #####
         name = f"{config['default_name_prefix']}{i}" # names are created according to the index "i"
-        age = random.randint(config['min_age'], config['max_age']) # As the maximum attainable age that we want in the game is 60
+        age = random.randint(config['age_min'], config['age_max']) # As the maximum attainable age that we want in the game is 60
         education_level = random.choices(config['education']['levels'],  weights=config['education']['weights'], k=1)[0]
         # Number of unpaid past credits
         past_credits = random.choices(config['past_credits']['levels'], weights=config['past_credits']['weights'], k=1)[0] # This emphasizes 0 and 1 unpaid credits
