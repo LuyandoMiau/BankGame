@@ -78,129 +78,65 @@ def generate_working_sector(profession):
 """Generate the monthly income and expenditure based on the profession and age.
 Note: These variables will be readjusted every period, so we need to use a Markov chain to make it more realistic."""   
   
-# # Define income parameters for different profession levels and age ranges
-# income_parameters = {
-#     ("LowSkilled", "Unemployed_LowSkilled"): {
-#         (30, 35): {"mean": 1000, "std_dev": 200, "max_income": 2000},
-#         (36, 40): {"mean": 1200, "std_dev": 200, "max_income": 2400},
-#         (41, 45): {"mean": 1500, "std_dev": 250, "max_income": 3000},
-#         (46, 50): {"mean": 1800, "std_dev": 300, "max_income": 3600},
-#         (51, 55): {"mean": 2000, "std_dev": 350, "max_income": 4000},
-#         (56, 60): {"mean": 2200, "std_dev": 400, "max_income": 4300},
-#         (61, 65): {"mean": 2400, "std_dev": 600, "max_income": 4500},
-#     },
-#     ("MediumSkilled", "Unemployed_MediumSkilled"): {
-#         (30, 35): {"mean": 1800, "std_dev": 300, "max_income": 4000},
-#         (36, 40): {"mean": 2300, "std_dev": 400, "max_income": 5000},
-#         (41, 45): {"mean": 2600, "std_dev": 500, "max_income": 6000},
-#         (46, 50): {"mean": 3000, "std_dev": 600, "max_income": 7000},
-#         (51, 55): {"mean": 3500, "std_dev": 800, "max_income": 8000},
-#         (56, 60): {"mean": 4000, "std_dev": 800, "max_income": 9000},
-#         (61, 65): {"mean": 5000, "std_dev": 1000, "max_income": 10000},
-#     },
-#     ("HighSkilled", "Unemployed_HighSkilled"): {
-#         (30, 35): {"mean": 3000, "std_dev": 500, "max_income": 10000},
-#         (36, 40): {"mean": 4500, "std_dev": 700, "max_income": 15000},
-#         (41, 45): {"mean": 6000, "std_dev": 1000, "max_income": 20000},
-#         (46, 50): {"mean": 7000, "std_dev": 1500, "max_income": 25000},
-#         (51, 55): {"mean": 8000, "std_dev": 2000, "max_income": 30000},
-#         (56, 60): {"mean": 9000, "std_dev": 3000, "max_income": 40000},
-#         (61, 65): {"mean": 10000, "std_dev": 4000, "max_income": 50000},
-#     }
-# }
-
-# # To calculate the monthly income and expenditure
-# def generate_income_expense(profession_undertake, current_age, num_dependents):
-#     # Iterate over income parameters for each profession group
-#     for profession_group, age_ranges in income_parameters.items():
-#         # Check if profession_undertake is one of the professions in the profession_group tuple
-#         if profession_undertake in profession_group:
-#             # Iterate over the age ranges and income parameters
-#             for age_range, params in age_ranges.items():
-#                 if age_range[0] <= current_age <= age_range[1]:
-#                     mean_income = params["mean"]
-#                     std_dev = params["std_dev"]
-#                     max_income = params["max_income"]
-#                     unemployement_money = mean_income * 0.5  # 50% of mean income for unemployment
-
-#                     # If profession_undertake contains the word "Unemployed" before "_", return the unemployment money
-#                     if profession_undertake.split("_")[0] == "Unemployed":
-#                         income = unemployement_money
-#                         expenditure = generate_expenditure(income, mean_income, num_dependents) # The belong to the population under mean_income
-#                         return income, expenditure
-                    
-#                     # If profession_undertake does not contain the word "Unemployed", generate income with an specific rule
-#                     else:
-#                         calc_income = int(np.random.normal(mean_income, std_dev))
-#                         income = max(unemployement_money, min(calc_income, max_income))  
-#                         expenditure = generate_expenditure(income, mean_income, num_dependents)
-#                         return income, expenditure
-
-
+# This function will return a function that will generate the income based on the type of function we want to use
+def type_income_increase(type_of_function):
+    if type_of_function == "linear":
+        return lambda x, min_val, max_val: np.linspace(min_val, max_val, x)
+    elif type_of_function == "quadratic":
+        return lambda x, min_val, max_val: min_val + (max_val - min_val) * (np.linspace(0, 1, x) ** 2)
+    elif type_of_function == "exponential":
+        return lambda x, min_val, max_val: min_val * (max_val / min_val) ** (np.linspace(0, 1, x))
+    elif type_of_function == "logarithmic":
+        return lambda x, min_val, max_val: min_val + (max_val - min_val) * np.log1p(np.linspace(0, np.e - 1, x)) / np.log1p(np.e - 1)
+    elif type_of_function == "sigmoid":
+        return lambda x, min_val, max_val: min_val + (max_val - min_val) / (1 + np.exp(- (np.linspace(-6, 6, x))))
+    elif type_of_function == "step":
+        def step_function(x, min_val, max_val):
+            steps = config['step_steps']
+            step_values = np.linspace(min_val, max_val, steps)
+            return np.repeat(step_values, x // steps + 1)[:x]
+        return step_function
+    else:
+        raise ValueError("Unknown function type")
+    
+# This function will generate the income and expenditure based on the profession, age and number of dependents
 def generate_income_expense(profession_undertake, current_age, num_dependents):
+    
+    # Load income parameters from config
     income_params = config["income_params"]
 
     # Validate profession
     if profession_undertake not in income_params:
         raise ValueError(f"Unknown profession: {profession_undertake}")
     
-    # Get min and max income for each profession
+    # Get min and max income for the profession
     min_income = income_params[profession_undertake]["min"]
     max_income = income_params[profession_undertake]["max"]
 
-    # Age range from config
+    # Age setup
     age_min = config["age_min"]
     age_max = config["age_max"]
-    age_difference = age_max - age_min + 1  # inclusive of both ends
+    num_ages = age_max - age_min + 1  # total number of age steps
 
-    # Age should be divisible by 2, 3, or 5 to create ranges
-    divisible_by = None
-    for divisor in [5, 3, 2]:
-        if age_difference % divisor == 0:
-            divisible_by = divisor
-            break
-    # If it is not divisible by any of them, raise an error
-    if divisible_by is None:
-        raise ValueError("Age range is not divisible by 2, 3, or 5.")
+    # Generate strictly increasing income for each age
+    #income_per_age = np.linspace(min_income, max_income, num_ages)  # linear increase
+    income_per_age = type_income_increase(config["type_of_function_income"])(num_ages, min_income, max_income)
+    # Map current_age to index
+    age_index = current_age - age_min
+    mean_income = income_per_age[age_index]
 
-    # Build age ranges based on divisibility
-    age_ranges = []
-    step = divisible_by
-    for i in range(age_difference // step):
-        start_age = age_min + i * step
-        end_age = start_age + step - 1
-        if end_age > age_max:
-            end_age = age_max
-        age_ranges.append((start_age, end_age))
+    # Small noise for realism but won't reverse trend
+    noise_std = (max_income - min_income) / (6 * num_ages)  # very small relative to step
+   
+   # Generate income and expenditure
+    income = int(np.random.normal(mean_income, noise_std))
+    income = min(max(income, min_income), max_income)  # clamp to min/max
+    expenditure = generate_expenditure(income, mean_income, num_dependents)
+    
+    # Return income and expenditure
+    return income, expenditure
 
-    # Split income ranges to match age ranges
-    difference_income = max_income - min_income
-    income_step = difference_income // len(age_ranges)
-    income_ranges = []
-    for i in range(len(age_ranges)):
-        start_income = min_income + i * income_step
-        end_income = start_income + income_step - 1 if i < len(age_ranges) - 1 else max_income
-        income_ranges.append((start_income, end_income))
-
-    # Match current age to the correct income range
-    for (age_range, income_range) in zip(age_ranges, income_ranges):
-        if age_range[0] <= current_age <= age_range[1]: # Check where does the current age fall
-            # Calculate mean and std_dev for normal distribution
-            min_income, max_income = income_range
-            mean_income = (min_income + max_income) / 2
-            std_dev = (max_income - min_income) / 6  # assume ±3σ covers 99.7%
-            
-            # Calculate income and expenditure
-            calc_income = int(np.random.normal(mean_income, std_dev))
-            income = min(max(calc_income, min_income), max_income)
-            expenditure = generate_expenditure(income, mean_income, num_dependents)
-            
-            return income, expenditure
-
-    # Check fallback (should not happen if ranges cover all ages)
-    raise ValueError(f"No valid age range found for age={current_age}")
-
-
+# Function to generate expenditure based on income and number of dependents
 def generate_expenditure(income, mean_income, num_dependents):
     # Values for low and for high income people (lower possible value, mode, higher possible value) depending on the number of dependents
     low_income_params = config["expenditure_params"]["low_income_params"]["dependents"]

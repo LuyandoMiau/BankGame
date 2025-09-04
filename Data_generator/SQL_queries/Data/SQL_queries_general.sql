@@ -20,6 +20,17 @@ SELECT "dependents",
 FROM customers_data_for_queries
 GROUP BY "dependents"
 ORDER BY "average monthly savings" ASC;
+
+-- Query to analyze customer income by age group
+-- This query groups customers by their "age" and calculates:
+--   - the number of customers in each age group,
+--   - the average monthly income
+SELECT "age", 
+        COUNT("age") AS "number of customers",
+        AVG("monthly income") AS "average monthly income"
+FROM customers_data_for_queries
+GROUP BY "age"
+ORDER BY "age" ASC;
  
 -- Query to analyze customer financials by profession and credit history
 -- This query groups customers by their "profession" and "number of not paid past credits" and calculates:

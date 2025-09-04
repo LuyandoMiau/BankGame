@@ -151,22 +151,34 @@ income_params:
     min: 800
     max: 10000
 
+# This is to define the type of function to generate income based on age
+# We can have four types of functions: 
+# linear: grows linearly with age, steady growth
+# quadratic: grows quadratically with age, steady early growth then fast later growth
+# exponential: grows exponentially with age, slow early growth then fast later growth
+# logarithmic: grows logarithmically with age, fast early growth then stabilizes
+# sigmoid: grows sigmoidally with age, slow early growth, fast middle growth, then stabilizes
+# step: income jumps at certain age thresholds
+type_of_function_income: "sigmoid"
+step_steps: 5 # number of steps if step function is chosen
+
+
 # Expenditure related
 expenditure_params:
-  low_income_params: 
-    dependents:
-      - [0.5, 0.7, 1.5]
-      - [0.7, 0.8, 1.5]
-      - [0.8, 0.9, 1.5]
-      - [0.9, 1.0, 1.5]
-      - [1.0, 1.1, 1.5]
-  high_income_params: 
-    dependents:
-      - [0.3, 0.5, 1.2]
-      - [0.4, 0.6, 1.2]
-      - [0.5, 0.7, 1.2]
-      - [0.6, 0.8, 1.2]
-      - [0.7, 0.9, 1.2]
+  low_income_params: # in case income lower than average income
+    dependents: # left, mode, right for triangular distribution
+      - [0.5, 0.7, 1.5] # for 0 dependents
+      - [0.7, 0.8, 1.5] # for 1 dependent
+      - [0.8, 0.9, 1.5] # for 2 dependents
+      - [0.9, 1.0, 1.5] # for 3 dependents
+      - [1.0, 1.1, 1.5] # for 4 dependents
+  high_income_params: # in case income higher or equal than average income
+    dependents: # left, mode, right for triangular distribution
+      - [0.3, 0.5, 1.2] # for 0 dependents
+      - [0.4, 0.6, 1.2] # for 1 dependent
+      - [0.5, 0.7, 1.2] # for 2 dependents
+      - [0.6, 0.8, 1.2] # for 3 dependents
+      - [0.7, 0.9, 1.2] # for 4 dependents
 
 # Credit characteristics related
 credit_characteristics:
@@ -199,20 +211,20 @@ collateral:
     - "liquid assets"
     - "none"
   thresholds:
-    - 50000
-    - 20000
-    - 0
-    - 0
+    - 50000 # House
+    - 20000 # Car
+    - 0 # Liquid assets
+    - 0 # None
   amount_per_type:
     HighSkilled:
-      per_no_collateral: 0.10
-      Boundaries: [10000, 80000]
+      per_no_collateral: 0.10 # percentage of people with no collateral
+      Boundaries: [10000, 80000] # min and max collateral value
     MediumSkilled:
-      per_no_collateral: 0.20
-      Boundaries: [10000, 50000]
+      per_no_collateral: 0.20 # percentage of people with no collateral
+      Boundaries: [10000, 50000] # min and max collateral value
     LowSkilled:
-      per_no_collateral: 0.35
-      Boundaries: [5000, 25000]
+      per_no_collateral: 0.35 # percentage of people with no collateral
+      Boundaries: [5000, 25000]  # min and max collateral value
 
 # Estimated seizable assets related
 seizable_assets_multiplier:
@@ -224,24 +236,24 @@ seizable_assets_multiplier:
 y_variable:
   risk_settings:
     Unemployed_LowSkilled:
-      base: 0.15
+      base: 0.15 # base probability of default
       weights: [0.30, 0.6, 0.4] # base probability of default and weights (past credits, debt to income before credit, credit to income)
     LowSkilled:
-      base: 0.08
+      base: 0.08 # base probability of default
       weights: [0.20, 0.5, 0.3] # base probability of default and weights (past credits, debt to income before credit, credit to income)
     Unemployed_MediumSkilled:
-      base: 0.12
+      base: 0.12 # base probability of default
       weights: [0.30, 0.5, 0.3] # base probability of default and weights (past credits, debt to income before credit, credit to income)
     MediumSkilled:
-      base: 0.05
+      base: 0.05 # base probability of default
       weights: [0.20, 0.45, 0.25] # base probability of default and weights (past credits, debt to income before credit, credit to income)
     Unemployed_HighSkilled:
-      base: 0.09
+      base: 0.09 # base probability of default
       weights: [0.30, 0.45, 0.25] # base probability of default and weights (past credits, debt to income before credit, credit to income)
     HighSkilled:
-      base: 0.02
+      base: 0.02 # base probability of default
       weights: [0.20, 0.4, 0.2] # base probability of default and weights (past credits, debt to income before credit, credit to income)
-  sector_risk_modifier:
+  sector_risk_modifier: # extra risk modifier based on working sector
     LowSkilled:
       Construction: 0.03
       Agriculture: 0.02
