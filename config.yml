@@ -1,3 +1,15 @@
+####################################### Bank Statements parameters #########################################
+
+initial_bank_values:
+  reserve_ratio: 0.1 # How many of the assets need to be hold by the bank and not be lend at the beginning of the game
+  reference_rate: 0.02 # The defined by the central bank rate at the beginning of the game
+  saving_rate: 0.01 # The base rate paid by the bank to the account holders at the beginning of the game
+  lending_rate_base: 0.04 # The base rate paid to the bank by the loan holders at the beginning of the game
+  initial_deposits: 1000000 # Original deposits hold by the bsnk st the beginning of the game
+  initial_equity: 100000 # Initial equity at the beginning of the game
+  retained_earnings: 100000 # Initial retained earnings at the beginning of the game
+
+
 ####################################### Data generation parameters #########################################
 
 ### ------- Data_generator/data_generator.py
@@ -272,3 +284,9 @@ y_variable:
       Research: -0.01
       Consultant: 0.0
       Doctor: -0.025
+
+####################################### PD, LGD, EAD Modelling ###############################################
+
+###### PD ##################################
+
+### ------- PD_estimation.py

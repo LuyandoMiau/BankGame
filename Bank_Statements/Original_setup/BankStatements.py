@@ -38,6 +38,11 @@ This in turn can also affect equity, reserves, and the ability to lend more mone
 # Packages required
 from tabulate import tabulate
 
+""" Load configuration from config.yml with the parameters needed """
+import yaml
+with open("config.yml", "r") as f:
+    config = yaml.safe_load(f)
+
 # The BalanceSheet class is used to encapsulate all the financial data and operations of the bank.
 # Using a class allows us to group related data (like deposits, reserves, loans) and methods (like calculating totals)
 # into a single, reusable, and organized structure. This makes the code easier to maintain, extend, and understand.
@@ -52,13 +57,14 @@ class BankThreeMainStatements:
     The inputs can be adjusted to simulate different scenarios or bank policies.
     Period, outstanding loans and non performing loans are set to zero at the beginning of the game, but they will dynamically change as the game progresses."""
     def __init__(self, 
-                 reserve_ratio=0.1, 
-                 reference_rate=0.02,
-                 saving_rate=0.01,
-                 lending_rate_base=0.04,
-                 initial_deposits=1_000_000,
-                 initial_equity=100_000,
-                 retained_earnings=100_000):
+                 reserve_ratio=config['initial_bank_values']['reserve_ratio'], 
+                 reference_rate=config['initial_bank_values']['reference_rate'],
+                 saving_rate=config['initial_bank_values']['saving_rate'],
+                 lending_rate_base=config['initial_bank_values']['lending_rate_base'],
+                 initial_deposits=config['initial_bank_values']['initial_deposits'],
+                 initial_equity=config['initial_bank_values']['initial_equity'],
+                 retained_earnings=config['initial_bank_values']['retained_earnings']
+                 ):
 
         #self is used to represent the instance of the class. It allows us to access attributes and methods associated with the class in Python.
 
