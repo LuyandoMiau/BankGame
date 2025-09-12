@@ -174,7 +174,7 @@ A screen will be displayed in which each period the user will be able to see:
 
                1. Files inside:
 
-                    [EAD_models.py](./PD_LGD_EAD_Modelling/EAD/EAD_models.py) ---> Not yet filled
+                    [EAD_estimation.py](./PD_LGD_EAD_Modelling/EAD/EAD_estimation.py) ---> Not yet filled
 
             3. LGD ---> Folder with the files to calculate the LGD
 

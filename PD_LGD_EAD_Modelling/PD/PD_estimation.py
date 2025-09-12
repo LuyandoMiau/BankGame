@@ -310,15 +310,20 @@ Defining th main function to run the logistic regression and Monte Carlo simulat
 It contains some input parameters to adjust the model training and simulation process.
 """
 
+""" Load configuration from config.yml with the parameters needed """
+import yaml
+with open("config.yml", "r") as f:
+    config = yaml.safe_load(f)
+
 def main(
-    epochs=20, # Number of epochs for training the neural network
-    batch_size=32, # Batch size for training the neural network
-    first_layer_activation_function='tanh', # Activation function for the first layer of the neural network
-    second_layer_activation_function='tanh', # Activation function for the second layer of the neural network
-    third_layer_activation_function='sigmoid', # Activation function for the output layer of the neural network
-    n_estimators=100, # Number of trees in the random forest model
-    random_state=42, # Random state for reproducibility
-    iterations=10 # 500 iterations for Monte Carlo simulation
+    epochs=config['PD_main_function']['neuronal_network']['epochs'], # Number of epochs for training the neural network
+    batch_size=config['PD_main_function']['neuronal_network']['batch_size'], # Batch size for training the neural network
+    first_layer_activation_function=config['PD_main_function']['neuronal_network']['first_layer_activation_function'], # Activation function for the first layer of the neural network
+    second_layer_activation_function=config['PD_main_function']['neuronal_network']['second_layer_activation_function'], # Activation function for the second layer of the neural network
+    third_layer_activation_function=config['PD_main_function']['neuronal_network']['third_layer_activation_function'], # Activation function for the output layer of the neural network
+    n_estimators=config['PD_main_function']['random_forests']['n_estimators'], # Number of trees in the random forest model
+    random_state=config['PD_main_function']['random_forests']['random_state'], # Random state for reproducibility
+    iterations=config['PD_main_function']['others']['iterations'] # number of iterations for Monte Carlo simulation
 ):
     # Packages
     import sys

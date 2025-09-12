@@ -290,3 +290,58 @@ y_variable:
 ###### PD ##################################
 
 ### ------- PD_estimation.py
+
+PD_main_function:
+  neuronal_network:
+    epochs: 20 # Number of epochs for training the neural network
+    batch_size: 32 # Batch size for training the neural network
+    first_layer_activation_function: 'tanh' # Activation function for the first layer of the neural network
+    second_layer_activation_function: 'tanh' # Activation function for the second layer of the neural network
+    third_layer_activation_function: 'sigmoid' # Activation function for the output layer of the neural network
+  random_forests:
+    n_estimators: 100 # Number of trees in the random forest model
+    random_state: 42 # Random state for reproducibility
+  others:
+    iterations: 10 # number of iterations for Monte Carlo simulation
+
+###### Interest rates ##################################
+
+### ------- original_i_rates_estimation.py
+
+interest_rates:
+  base_rate: null # initial_bank_values:reference_rate defined above will be pulled using pythong in original_i_rates_estimation
+  max_interest_rate: 0.5  # Maximum interest rate allowed. This one will be set by the bank, based on its risk appetite and other factors
+  credit_to_income_ratio_factor: 0.04  # Factor for credit-to-income ratio
+  loan_duration_factor: 0.01  # Factor for loan duration
+  debt_factor: 0.02  # Factor for debt-to-income ratio
+  asset_factor: 0.03  # Factor for estimated seizable assets
+
+###### LGD ##################################
+
+### ------- LGD_estimation.py
+
+# Non-existign right now, as it relies right now heavily on the interest rates and the parameters above to generate them
+
+###### EAD ##################################
+
+### ------- EAD_estimation.py
+
+# Non-existign right now
+
+###### Gaussian_copula_estimation ##################################
+
+### ------- Gaussian_factor_copula.py
+
+gaussian_copula:
+  third_step: # Simulate default indicators using a Gaussian factor copula model with group-level and macroeconomic factors.
+    n_sim: 1000 # number of Monte Carlo simulations
+    rho_macro: 0.1 # weight for macroeconomic factor
+    rho_group: 0.2 # weight for group-level factors
+  fifth_step: # Estimate the capital per borrower using the IRB approach.
+    rho: 0.15 # Correlation parameter
+  ninth_step: # In this part, the top N borrowers with the highest joint default probabilities for each borrower are identified
+    top_n: 5 # number of top borrowers to identify
+
+
+
+

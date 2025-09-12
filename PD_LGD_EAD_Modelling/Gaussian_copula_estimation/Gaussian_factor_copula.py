@@ -21,6 +21,11 @@ from scipy.stats import norm, multivariate_normal
 from scipy.optimize import minimize
 from sklearn.preprocessing import StandardScaler
 
+""" Load configuration from config.yml with the parameters needed """
+import yaml
+with open("config.yml", "r") as f:
+    config = yaml.safe_load(f)
+
 """ FIRST STEP: REVIEWED!
 we will combine our data from the Data Generator module with our PDs generated in the PD_LGD_EAD_Modelling module.
 This will allow us to have a complete dataset with all the necessary features for our Gaussian factor copula model
@@ -97,8 +102,12 @@ The default matrices are useful for understanding the risk profile of the portfo
 and calculating capital requirements based on the simulated defaults. They allow us to analyze the impact of different factors on default probabilities and assess the overall risk exposure of the portfolio.
 """
 
-def simulate_default_indicators_grouped(default_thresholds, data, n_sim=1000,
-                                        rho_macro=0.1, rho_group=0.2):
+def simulate_default_indicators_grouped(default_thresholds, 
+                                        data, 
+                                        n_sim=config['gaussian_copula']['third_step']['n_sim'],
+                                        rho_macro=config['gaussian_copula']['third_step']['rho_macro'], 
+                                        rho_group=config['gaussian_copula']['third_step']['rho_group']
+                                        ):
     """
     Simulate default indicators using a Gaussian factor copula model with group-level and macroeconomic factors.
 
@@ -276,7 +285,7 @@ def irb_capital_per_borrower(EAD, PD, LGD, rho):
     required_capital = capital * EAD  # This one is to get the actual capital requirement per borrower
     return required_capital
 
-rho = 0.15  # Correlation parameter
+rho = config['gaussian_copula']['fifth_step']['rho'] # Correlation parameter
 
 # You can adjust LGD here if you want per borrower, for now keep it simple with LGD=1 or use actual LGD values.
 # Using actual LGD per borrower might be more realistic:
@@ -363,7 +372,10 @@ It returns a DataFrame with borrower IDs and their top N joint default borrowers
 This is useful for understanding the risk concentration in the portfolio and identifying borrowers that are likely to default together.
 This information can be used for risk management, capital allocation, and portfolio optimization."""
 # Identify for each borrower the top 5 borrowers with the highest joint default probabilities and save to a CSV file
-def top_joint_default_borrowers(joint_probs, borrower_ids, top_n=5):
+def top_joint_default_borrowers(joint_probs, 
+                                borrower_ids, 
+                                top_n=config['gaussian_copula']['ninth_step']['top_n']
+                                ):
     """
     Identify the top N borrowers with the highest joint default probabilities for each borrower,
     and return both the borrower IDs and the corresponding probabilities.

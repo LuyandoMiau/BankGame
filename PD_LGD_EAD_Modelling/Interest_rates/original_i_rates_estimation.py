@@ -18,6 +18,11 @@ import sys
 import pandas as pd
 import numpy as np
 
+""" Load configuration from config.yml with the parameters needed """
+import yaml
+with open("config.yml", "r") as f:
+    config = yaml.safe_load(f)
+
 # Absolute path to the directory containing the CSV file
 data_dir = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/'
 
@@ -30,18 +35,12 @@ We will use the following variables to calculate the interest rate:
 3. debt-to-income ratio before credit: df['debt-to-income ratio before credit']
 4. estimated seizable assets: df['estimated-seizable-assets']"""
 
-# These are paramters that we can change to adjust the interest rate calculation
+###### These are paramters that we can change to adjust the interest rate calculation
+###### They will be defined in config.yml
 
 # This one will play a determinant role in the game as it will be set by a third party, the central bank
-base_rate = 0.05  # Base interest rate
-# This one will be set by the bank, based on its risk appetite and other factors
-max_interest_rate = 0.5  # Maximum interest rate allowed
-
-# Factors for the other variables
-credit_to_income_ratio_factor = 0.04  # Factor for credit-to-income ratio
-loan_duration_factor = 0.01  # Factor for loan duration
-debt_factor = 0.02  # Factor for debt-to-income ratio
-asset_factor = 0.03  # Factor for estimated seizable assets
+# It will be pulled from initial_bank_values: reference_rate
+config["interest_rates"]["base_rate"] = config["initial_bank_values"]["reference_rate"]
 
 
 # REVIEW THE FUNCTION BELOW!!!
@@ -53,7 +52,8 @@ def calculate_interest_rate(df,
                             credit_to_income_ratio_factor, 
                             loan_duration_factor, 
                             debt_factor, 
-                            asset_factor):
+                            asset_factor
+                            ):
     """
     Calculate interest rate based on various factors.
     
@@ -112,7 +112,14 @@ def main():
     df = pd.read_csv(file_path)
 
     # Calculate the interest rate for the whole dataset
-    interest_rates = calculate_interest_rate(df, base_rate, max_interest_rate, credit_to_income_ratio_factor, loan_duration_factor, debt_factor, asset_factor)
+    interest_rates = calculate_interest_rate(df = df, 
+                                             base_rate = config["interest_rates"]["base_rate"], 
+                                             max_interest_rate = config["interest_rates"]["max_interest_rate"], 
+                                             credit_to_income_ratio_factor = config["interest_rates"]["credit_to_income_ratio_factor"], 
+                                             loan_duration_factor = config["interest_rates"]["loan_duration_factor"], 
+                                             debt_factor = config["interest_rates"]["debt_factor"], 
+                                             asset_factor = config["interest_rates"]["asset_factor"]
+                                             )
 
     return interest_rates
 

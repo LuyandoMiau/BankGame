@@ -17,6 +17,7 @@ Still to do for this version:
 14. Consider estimation rules of PDs for Low Default Portfolios
 15. Calculate, apart from the EL, the Value at Risk (VaR), the Unexpected Loss (UL) and the Expected Shortfall (ES)
 16. Calculate the RW as per the STA (witha defined rule as per the ratings of the people), IRB (as per the formula from the EBA)
+17. Create a general path from which the rest of folders and files will be derived, for better updating --> IMPORTANT!
 
 
 WORKING ON: 1, 7
