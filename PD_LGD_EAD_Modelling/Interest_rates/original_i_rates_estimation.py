@@ -17,14 +17,19 @@ import os
 import sys
 import pandas as pd
 import numpy as np
+from pathlib import Path
 
 """ Load configuration from config.yml with the parameters needed """
 import yaml
 with open("config.yml", "r") as f:
     config = yaml.safe_load(f)
 
+# Convert general_path to a Path object
+general_path = Path(config["general_path"])
+
 # Absolute path to the directory containing the CSV file
-data_dir = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/'
+#data_dir = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/'
+data_dir = os.path.join(config["general_path"], "Data_generator", "Generated_data")
 
 """ Now we have the data ready, we can start calculating the interest rates.
 We will use the scaled data for the interest rate calculation.
