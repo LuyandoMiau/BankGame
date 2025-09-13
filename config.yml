@@ -1,4 +1,7 @@
+# IN CASE THE REPOSITORY IS DOWNLOADED, THIS NEEDS TO BE UPDATED BY THE USER
 general_path: '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/'
+
+# THE REST OF THE PARAMETERS CAN OR CANNOT BE UPDATED, BUT THE GENERAL PATH NEEDS TO BE UPDATED OTHERWISE THE CODE WON'T RUN
 
 ####################################### Bank Statements parameters #########################################
 
