@@ -5,11 +5,21 @@ import pandas as pd
 import numpy as np
 import sys
 import os
+from pathlib import Path
+
+# Load config
+import yaml
+with open("config.yml", "r") as file:
+    config = yaml.safe_load(file)
+    
+# Convert general_path to a Path object
+general_path = Path(config["general_path"])
 
 """Let"s call the data"""
 
 # Add the folder containing data_generator.py to the Python path
-sys.path.append(os.path.abspath('/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator'))
+data_generator_path = general_path / "Data_generator"
+sys.path.append(str(data_generator_path))  # Convert Path to string
 from data_generator import saving_path_models # even if it is underlined with yellow, it is not a problem
 
 def main():

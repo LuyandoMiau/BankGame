@@ -5,6 +5,7 @@ from functions_data_generator import generate_profession, generate_working_secto
 import pandas as pd
 import numpy as np
 import random
+import os
 
 """ Load configuration from config.yml with the parameters needed """
 import yaml
@@ -104,8 +105,8 @@ def data_generator(number_of_customers):
  
 # Load parameters from the config file
 number_of_customers_1 = config["number_of_customers_1"] # Number of customers to be generated
-saving_path_statistics = config["saving_path_statistics"]
-saving_path_models = config["saving_path_models"]
+saving_path_statistics = os.path.join(config["general_path"], "Data_generator", "Generated_data", "customers_data_for_queries.csv")
+saving_path_models = os.path.join(config["general_path"], "Data_generator", "Generated_data", "customers_data_for_models.csv")
 #####################################################################################################################
 
 def main():

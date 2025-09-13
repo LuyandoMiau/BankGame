@@ -330,9 +330,19 @@ def main(
     import os
     import pprint
     import pandas as pd
+    from pathlib import Path
+
+    # Load config
+    import yaml
+    with open("config.yml", "r") as file:
+        config = yaml.safe_load(file)
+        
+    # Convert general_path to a Path object
+    general_path = Path(config["general_path"])
 
     # Adjust path for module import
-    sys.path.append(os.path.abspath('/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/PD_LGD_EAD_Modelling'))
+    PD_EAD_path = general_path / "PD_LGD_EAD_Modelling"
+    sys.path.append(str(PD_EAD_path))  # Convert Path to string
 
     # Import your data setup function
     from DataEditingVariableSetup import main as data_setup_main
