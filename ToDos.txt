@@ -3,21 +3,20 @@ Still to do for this version:
 0. Make a graph of the joint probabilities of default to check for highest likelihoods of default
 1. Add MoC
 2. Create SQL file for visualization of the file customer_data_plus_PDs&IRB_Cap_req.csv
-3. Create a general path from which the rest of folders and files will be derived, for better updating --> IMPORTANT!
-4. Include a more detailed way to calculate interest rates given what you learned in the Credit Risk Advanced Course
-5. Constantly update README.md
-6. Make a 7 point scale rating for customers (where the last rating is default = 1)
-7. Types of data, customer data, behavioral data, macro data, expert data to get PDs and LGDs
-8. Re-adapt the data using the SQL queries as support for visualization fo the data, to handle outliers.
-9. Check for correlation between variables and check if it makes sense to apply a LASSO regression before applying other ones, to determine the variables that are significant and actually to be used in the final regression/model.
-10. Under the EBA regulations, only Through The Cycle (TTC) PDs may be used to compute the IRB funds requirements, make sure of this!
-11. Try also calibrating the models for the PD and LGD
-12. Consider estimation rules of PDs for Low Default Portfolios
-13. Calculate, apart from the EL, the Value at Risk (VaR), the Unexpected Loss (UL) and the Expected Shortfall (ES)
-14. Calculate the RW as per the STA (witha defined rule as per the ratings of the people), IRB (as per the formula from the EBA)
+3. Include a more detailed way to calculate interest rates given what you learned in the Credit Risk Advanced Course
+4. Constantly update README.md
+5. Make a 7 point scale rating for customers (where the last rating is default = 1)
+6. Types of data, customer data, behavioral data, macro data, expert data to get PDs and LGDs
+7. Re-adapt the data using the SQL queries as support for visualization fo the data, to handle outliers.
+8. Check for correlation between variables and check if it makes sense to apply a LASSO regression before applying other ones, to determine the variables that are significant and actually to be used in the final regression/model.
+9. Under the EBA regulations, only Through The Cycle (TTC) PDs may be used to compute the IRB funds requirements, make sure of this!
+10. Try also calibrating the models for the PD and LGD
+11. Consider estimation rules of PDs for Low Default Portfolios
+12. Calculate, apart from the EL, the Value at Risk (VaR), the Unexpected Loss (UL) and the Expected Shortfall (ES)
+13. Calculate the RW as per the STA (witha defined rule as per the ratings of the people), IRB (as per the formula from the EBA)
 
 
-WORKING ON: 3
+WORKING ON: 
 
 To-Dos for next version:
 1. create a user interface (GUI) using html or something else.
