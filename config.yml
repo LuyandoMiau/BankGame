@@ -19,8 +19,6 @@ initial_bank_values:
 # General parameters ---->
 
 number_of_customers_1: 1000
-saving_path_statistics: '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data_for_queries.csv'
-saving_path_models: '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data_for_models.csv'
 
 # Parameters for variables generation ---->
 
