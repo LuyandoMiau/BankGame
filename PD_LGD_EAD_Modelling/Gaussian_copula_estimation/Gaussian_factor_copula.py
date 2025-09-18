@@ -36,15 +36,13 @@ This will allow us to have a complete dataset with all the necessary features fo
 """
 
 # Read the csv file into a pandas DataFrame
-#data_path = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/customers_data_for_queries.csv'
-data_path = general_path / "Data_generator" / "Generated_data" / "customers_data_for_queries.csv"
+data_path = os.path.join(config["general_path"], config["paths_relative_to_general_path"]["customers_data_queries_csv"])
 data = pd.read_csv(data_path)
 
 # Now we will import the PDs generated in the PD_LGD_EAD_Modelling module.
 
 # Adjust path for module import
-#sys.path.append(os.path.abspath('/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/PD_LGD_EAD_Modelling/PD'))
-PD_path = general_path / "PD_LGD_EAD_Modelling" / "PD"
+PD_path = os.path.join(config["general_path"], config["paths_relative_to_general_path"]["pd_folder"])
 sys.path.append(str(PD_path))
 
 # Import your data setup function
@@ -235,9 +233,8 @@ Where:
 
 # LET'S IMPORT THE LGD VALUES ################################
 # Adjust path for module import
-LGD_path = general_path / "PD_LGD_EAD_Modelling" / "LGD"
+LGD_path = os.path.join(config["general_path"], config["paths_relative_to_general_path"]["lgd_folder"])
 sys.path.append(str(LGD_path))
-#sys.path.append(os.path.abspath('/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/PD_LGD_EAD_Modelling/LGD'))
 
 # Import your data setup function
 from LGD_estimation import main as data_setup_main
@@ -307,6 +304,7 @@ for model in ['LR', 'NN', 'RF']:
         LGD=combined_data['LGD'].values,
         rho=rho
     )
+   
     
 """SIXTH STEP: REVIEWED!
 Let's clean up the combined_data DataFrame by removing unnecessary columns.
@@ -315,12 +313,12 @@ Let's clean up the combined_data DataFrame by removing unnecessary columns.
 # We will also eliminate the default thresholds columns as they are not needed anymore
 combined_data.drop(columns=["default_threshold_LR", "default_threshold_NN", "default_threshold_RF"], inplace=True)
 
+
 """ SEVENTH STEP: REVIEWED!
 Save the final combined data with joint default probabilities to a new CSV file.
 """
 # Save the combined data to a new CSV file
-combined_data_path = general_path / "Data_generator" / "Generated_data" / "PD_LGD_EAD_IRB" / "customer_data_plus_PDs&IRB_Cap_req.csv"
-#combined_data_path = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/PD_LGD_EAD_IRB/customer_data_plus_PDs&IRB_Cap_req.csv'
+combined_data_path = os.path.join(config["general_path"], config["paths_relative_to_general_path"]["combined_data_pd_ldg_ead_irb_csv"])
 combined_data.to_csv(combined_data_path, index=False)
     
 
@@ -375,6 +373,7 @@ def estimate_pairwise_joint_defaults(default_matrix):
 joint_default_probabilities_LR = estimate_pairwise_joint_defaults(default_matrix_LR)
 joint_default_probabilities_NN = estimate_pairwise_joint_defaults(default_matrix_NN)
 joint_default_probabilities_RF = estimate_pairwise_joint_defaults(default_matrix_RF)
+
 
 """NINTH STEP: Function to identify the top joint default borrowers
 This function identifies the top N borrowers with the highest joint default probabilities for each borrower.
@@ -433,9 +432,9 @@ top_joint_borrowers_NN = top_joint_default_borrowers(joint_default_probabilities
 top_joint_borrowers_RF = top_joint_default_borrowers(joint_default_probabilities_RF, borrower_ids)
 
 # Define the path to save the joint default probabilities
-joint_default_probs_path = general_path / "Data_generator" / "Generated_data" / "joint_def_prob"
+joint_default_probs_path = os.path.join(config["general_path"], config["paths_relative_to_general_path"]["joint_default_probabilities_folder"])
 
 # Save the top joint default borrowers to CSV files for each model
-top_joint_borrowers_LR.to_csv(joint_default_probs_path / "top_joint_borrowers_LR.csv", index_label="Borrower_ID")
-top_joint_borrowers_NN.to_csv(joint_default_probs_path / "top_joint_borrowers_NN.csv", index_label="Borrower_ID")
-top_joint_borrowers_RF.to_csv(joint_default_probs_path / "top_joint_borrowers_RF.csv", index_label="Borrower_ID")
+top_joint_borrowers_LR.to_csv(os.path.join(joint_default_probs_path, "top_joint_borrowers_LR.csv"), index_label="Borrower_ID")
+top_joint_borrowers_NN.to_csv(os.path.join(joint_default_probs_path, "top_joint_borrowers_NN.csv"), index_label="Borrower_ID")
+top_joint_borrowers_RF.to_csv(os.path.join(joint_default_probs_path, "top_joint_borrowers_RF.csv"), index_label="Borrower_ID")

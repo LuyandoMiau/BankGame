@@ -1,15 +1,22 @@
-# IN CASE THE REPOSITORY IS DOWNLOADED, THIS NEEDS TO BE UPDATED BY THE USER
+# IN CASE THE REPOSITORY IS DOWNLOADED, THIS NEEDS TO BE UPDATED BY THE USER, IT WILL BE ASKED TO BE UPDATED IN THE BEGINNING OF MAIN_PIPELINE.PY
 general_path: '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/'
 
+# These paths are relative to the general path defined above, so they don't need to be updated by the user
 paths_relative_to_general_path:
   customers_data_queries_csv: "Data_generator/Generated_data/customers_data_for_queries.csv"
   customers_data_models_csv: "Data_generator/Generated_data/customers_data_for_models.csv" 
   customers_data_for_queries_db: "Data_generator/SQL_queries/Data/customers_data_for_queries.db"
+  combined_data_pd_ldg_ead_irb_csv: "Data_generator/Generated_data/PD_LGD_EAD_IRB/customer_data_plus_PDs&IRB_Cap_req.csv"
   data_generator_folder: "Data_generator/"
   pd_lgd_ead_folder: "PD_LGD_EAD_Modelling/"
   bank_statements_folder: "Bank_Statements/"
   generated_data_folder: "Data_generator/Generated_data/"
   interest_rates_folder: "Interest_rates/"
+  pd_folder: "PD_LGD_EAD_Modelling/PD/"
+  lgd_folder: "PD_LGD_EAD_Modelling/LGD/"
+  ead_folder: "PD_LGD_EAD_Modelling/EAD/"
+  gaussian_copula_folder: "PD_LGD_EAD_Modelling/Gaussian_copula/"
+  joint_default_probabilities_folder: "Data_generator/Generated_data/joint_def_prob/"
 
 # THE REST OF THE PARAMETERS CAN OR CANNOT BE UPDATED, BUT THE GENERAL PATH NEEDS TO BE UPDATED OTHERWISE THE CODE WON'T RUN
 
@@ -315,7 +322,7 @@ PD_main_function:
     n_estimators: 100 # Number of trees in the random forest model
     random_state: 42 # Random state for reproducibility
   others:
-    iterations: 10 # number of iterations for Monte Carlo simulation
+    iterations: 1 # number of iterations for Monte Carlo simulation, change it to 100 or more for better results
 
 ###### Interest rates ##################################
 
