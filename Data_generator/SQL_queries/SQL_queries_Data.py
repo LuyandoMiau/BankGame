@@ -13,7 +13,7 @@ with open("config.yml", "r") as file:
 # Add Data_generator folder to sys.path, this is so that we can import saving_path_statistics from data_generator.py
 # This is because SQL_queries_Data.py is in a different folder than data_generator.py, so we need to add the path to sys.path
 # This in order to be able to import saving_path_statistics
-data_generator_path = Path(config["general_path"]) / "Data_generator"
+data_generator_path = Path(config["general_path"]) / config["paths_relative_to_general_path"]["data_generator_folder"]
 sys.path.append(str(data_generator_path))
 from data_generator import saving_path_statistics
 

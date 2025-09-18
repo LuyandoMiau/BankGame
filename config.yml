@@ -5,6 +5,9 @@ paths_relative_to_general_path:
   customers_data_queries_csv: "Data_generator/Generated_data/customers_data_for_queries.csv"
   customers_data_models_csv: "Data_generator/Generated_data/customers_data_for_models.csv" 
   customers_data_for_queries_db: "Data_generator/SQL_queries/Data/customers_data_for_queries.db"
+  data_generator_folder: "Data_generator/"
+  pd_lgd_ead_folder: "PD_LGD_EAD_Modelling/"
+  bank_statements_folder: "Bank_Statements/"
 
 # THE REST OF THE PARAMETERS CAN OR CANNOT BE UPDATED, BUT THE GENERAL PATH NEEDS TO BE UPDATED OTHERWISE THE CODE WON'T RUN
 

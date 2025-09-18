@@ -341,8 +341,8 @@ def main(
     general_path = Path(config["general_path"])
 
     # Adjust path for module import
-    PD_EAD_path = general_path / "PD_LGD_EAD_Modelling"
-    sys.path.append(str(PD_EAD_path))  # Convert Path to string
+    PD_LGD_EAD_path = general_path / config["paths_relative_to_general_path"]["pd_lgd_ead_folder"]
+    sys.path.append(str(PD_LGD_EAD_path))  # Convert Path to string
 
     # Import your data setup function
     from DataEditingVariableSetup import main as data_setup_main
