@@ -102,11 +102,11 @@ def data_generator(number_of_customers):
 """ Generate the data for a specified number of customers """
 
 # INPUTS THAT CAN BE CHANGED ########################################################################################
- 
+
 # Load parameters from the config file
 number_of_customers_1 = config["number_of_customers_1"] # Number of customers to be generated
-saving_path_statistics = os.path.join(config["general_path"], "Data_generator", "Generated_data", "customers_data_for_queries.csv")
-saving_path_models = os.path.join(config["general_path"], "Data_generator", "Generated_data", "customers_data_for_models.csv")
+saving_path_statistics = os.path.join(config["general_path"], config['paths_relative_to_general_path']['customers_data_queries_csv'])
+saving_path_models = os.path.join(config["general_path"], config['paths_relative_to_general_path']['customers_data_models_csv'])
 #####################################################################################################################
 
 def main():
