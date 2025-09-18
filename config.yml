@@ -6,7 +6,7 @@ paths_relative_to_general_path:
   customers_data_queries_csv: "Data_generator/Generated_data/customers_data_for_queries.csv"
   customers_data_models_csv: "Data_generator/Generated_data/customers_data_for_models.csv" 
   customers_data_for_queries_db: "Data_generator/SQL_queries/Data/customers_data_for_queries.db"
-  combined_data_pd_ldg_ead_irb_csv: "Data_generator/Generated_data/PD_LGD_EAD_IRB/customer_data_plus_PDs&IRB_Cap_req.csv"
+  combined_data_pd_ldg_ead_irb_csv: "Output_data/customer_PD_LGD_EAD_STA_IRB/customer_data_PD_LGD_EAD_IRB.csv"
   data_generator_folder: "Data_generator/"
   pd_lgd_ead_folder: "PD_LGD_EAD_Modelling/"
   bank_statements_folder: "Bank_Statements/"
@@ -15,8 +15,8 @@ paths_relative_to_general_path:
   pd_folder: "PD_LGD_EAD_Modelling/PD/"
   lgd_folder: "PD_LGD_EAD_Modelling/LGD/"
   ead_folder: "PD_LGD_EAD_Modelling/EAD/"
-  gaussian_copula_folder: "PD_LGD_EAD_Modelling/Gaussian_copula/"
-  joint_default_probabilities_folder: "Data_generator/Generated_data/joint_def_prob/"
+  gaussian_copula_folder: "PD_LGD_EAD_Modelling/Gaussian_copula_estimation/"
+  joint_default_probabilities_folder: "Output_data/joint_def_prob/"
 
 # THE REST OF THE PARAMETERS CAN OR CANNOT BE UPDATED, BUT THE GENERAL PATH NEEDS TO BE UPDATED OTHERWISE THE CODE WON'T RUN
 

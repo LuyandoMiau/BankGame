@@ -100,28 +100,6 @@ A screen will be displayed in which each period the user will be able to see:
                     [customers_data_for_queries.csv](./Data_generator/Generated_data/customers_data_for_queries.csv) --> Contains the customer data generated at the beginning of the game. Used to create SQL queries with the data for evaluation of the statistics and dependencies of the data.
 
                     ===> Dependencies above = ([original_i_rates_estimation.py](./PD_LGD_EAD_Modelling/Interest_rates/original_i_rates_estimation.py), [LGD_estimation.py](./PD_LGD_EAD_Modelling/LGD/LGD_estimation.py)), Dependencies below = [data_generator.py](./Data_generator/data_generator.py)
-
-               2. Folders inside: 
-
-                    1. joint_def_prob ---> Here will the data of the joint default probabilities be saved. All of them are comming from the Gaussian copula model. LR (Logisitic Regression), NN (Neuronal Networks) and RF (Random Forests) are just different methods used to calculate the PDs, and this in turn affects our joint probabilities, which are different depending on the model used.
-                       
-                       1. Files inside
-
-                            [top_joint_borrowers_LR.csv](./Data_generator/Generated_data/joint_def_prob/top_joint_borrowers_LR.csv) ---> joint default probabilities using LR model
-
-                            [top_joint_borrowers_NN.csv](./Data_generator/Generated_data/joint_def_prob/top_joint_borrowers_NN.csv) ---> joint default probabilities using NN model
-
-                            [top_joint_borrowers_RF.csv](./Data_generator/Generated_data/joint_def_prob/top_joint_borrowers_RF.csv) ---> joint default probabilities using RF model
-
-                            ===> Dependencies above = NONE YET, Dependencies below = [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py) 
-
-                   1. PD_LGD_EAD_IRB ---> Here is the data saved with a combination of our "customers_data_for_queries.csv" plus the estimated PDs, LGDs, EADs and IRB requirements
-
-                      1. Files inside
-
-                            [customer_data_plus_PDs&IRB_Cap_req.csv](./Data_generator/Generated_data/PD_LGD_EAD_IRB/customer_data_plus_PDs&IRB_Cap_req.csv) ---> extended data with PD, LGD, EAD and IRB Capital Requirements estimations
-
-                            ===> Dependencies above = None yet, Dependencies below = [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py)
             
             2. SQL_queries ---> Here the SQL queries are generated and saved
 
@@ -205,6 +183,31 @@ A screen will be displayed in which each period the user will be able to see:
                     *4[Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py) ---> In this file we introduce a Gaussian factor copula model to estimate the joint default behavior of the customers, we estimate the join probabilities of default and the IRB requirements that should be hold for each customer if the loan is lend to them
 
                     ===> Dependencies above = [main_pipeline.py](main_pipeline.py), Dependencies below = ([customer_data_for_queries.csv](./Data_generator/Generated_data/customers_data_for_queries.csv), [PD_estimation.py](./PD_LGD_EAD_Modelling/PD/PD_estimation.py), [LGD_estimation.py](./PD_LGD_EAD_Modelling/LGD/LGD_estimation.py))
+    
+    4. Output_data
+
+       1. Folders inside: 
+
+            1. joint_def_prob ---> Here will the data of the joint default probabilities be saved. All of them are comming from the Gaussian copula model. LR (Logisitic Regression), NN (Neuronal Networks) and RF (Random Forests) are just different methods used to calculate the PDs, and this in turn affects our joint probabilities, which are different depending on the model used.
+                       
+                1. Files inside
+
+                    [top_joint_borrowers_LR.csv](./Output_data/joint_def_prob/top_joint_borrowers_LR.csv) ---> joint default probabilities using LR model
+
+                    [top_joint_borrowers_NN.csv](./Output_data/joint_def_prob/top_joint_borrowers_NN.csv) ---> joint default probabilities using NN model
+
+                    [top_joint_borrowers_RF.csv](./Output_data/joint_def_prob/top_joint_borrowers_RF.csv) ---> joint default probabilities using RF model
+
+                    ===> Dependencies above = NONE YET, Dependencies below = [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py) 
+
+            2. customer_PD_LGD_EAD_STA_IRB ---> Here is the data saved with a combination of our "customers_data_for_queries.csv" plus the estimated PDs, LGDs, EADs and IRB requirements
+
+                1. Files inside
+
+                    [customer_data_PD_LGD_EAD_IRB.csv](./Output_data/customer_PD_LGD_EAD_STA_IRB/customer_data_PD_LGD_EAD_IRB.csv) ---> extended data with PD, LGD, EAD and IRB Capital Requirements estimations
+
+                    ===> Dependencies above = None yet, Dependencies below = [Gaussian_factor_copula.py](./PD_LGD_EAD_Modelling/Gaussian_copula_estimation/Gaussian_factor_copula.py)
+            
 
 
 
