@@ -52,14 +52,15 @@ general_path = Path(config["general_path"])
 """As we already have the data split and scaled, we will import the data setup function"""
 
 # Absolute path to the directory containing the CSV file
-#data_dir = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/'
-data_dir = os.path.join(config["general_path"], "Data_generator", "Generated_data")
+#data_dir = os.path.join(config["general_path"], "Data_generator", "Generated_data")
+data_dir = os.path.join(config["general_path"], config["paths_relative_to_general_path"]["generated_data_folder"])
 
 # Add the directory to sys.path
 sys.path.append(os.path.abspath(data_dir))
 
 # Full path to the CSV file
-file_path = os.path.join(data_dir, 'customers_data_for_queries.csv')
+#file_path = os.path.join(data_dir, 'customers_data_for_queries.csv')
+file_path = os.path.join(config["general_path"], config["paths_relative_to_general_path"]["customers_data_queries_csv"])
 
 # Load the customer data using the full path
 df = pd.read_csv(file_path)
@@ -134,12 +135,9 @@ def main():
     """
     
     # Add the folder containing data_generator.py to the Python path
-    LGD_path = general_path / "PD_LGD_EAD_Modelling" / "Interest_rates"
-    sys.path.append(str(LGD_path))  # Convert Path to string
-
-    # Adjust path for module import
-    #sys.path.append(os.path.abspath('/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/PD_LGD_EAD_Modelling/Interest_rates'))
-
+    interest_rates_path = os.path.join(general_path, config["paths_relative_to_general_path"]["pd_lgd_ead_folder"], config["paths_relative_to_general_path"]["interest_rates_folder"])
+    sys.path.append(str(interest_rates_path))
+    
     # Import your data setup function
     from original_i_rates_estimation import main as interest_rates_main
 

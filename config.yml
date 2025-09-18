@@ -8,6 +8,8 @@ paths_relative_to_general_path:
   data_generator_folder: "Data_generator/"
   pd_lgd_ead_folder: "PD_LGD_EAD_Modelling/"
   bank_statements_folder: "Bank_Statements/"
+  generated_data_folder: "Data_generator/Generated_data/"
+  interest_rates_folder: "Interest_rates/"
 
 # THE REST OF THE PARAMETERS CAN OR CANNOT BE UPDATED, BUT THE GENERAL PATH NEEDS TO BE UPDATED OTHERWISE THE CODE WON'T RUN
 
