@@ -16,7 +16,7 @@ Still to do for this version:
 13. Calculate the RW as per the STA (witha defined rule as per the ratings of the people), IRB (as per the formula from the EBA)
 
 
-WORKING ON: 3
+WORKING ON: 6, 4
 
 To-Dos for next version:
 1. create a user interface (GUI) using html or something else.
