@@ -18,8 +18,8 @@ general_path = Path(config["general_path"])
 """Let"s call the data"""
 
 # Add the folder containing data_generator.py to the Python path
-data_generator_path = general_path / "Data_generator"
-sys.path.append(str(data_generator_path))  # Convert Path to string
+data_generator_path = os.path.join(config["general_path"], config["paths_relative_to_general_path"]["data_generator_folder"])
+sys.path.append(data_generator_path)  # Convert Path to string
 from data_generator import saving_path_models # even if it is underlined with yellow, it is not a problem
 
 def main():
