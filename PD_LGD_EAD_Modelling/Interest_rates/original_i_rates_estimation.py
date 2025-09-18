@@ -28,8 +28,7 @@ with open("config.yml", "r") as f:
 general_path = Path(config["general_path"])
 
 # Absolute path to the directory containing the CSV file
-#data_dir = '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/Data_generator/Generated_data/'
-data_dir = os.path.join(config["general_path"], "Data_generator", "Generated_data")
+data_dir = os.path.join(config["general_path"], config["paths_relative_to_general_path"]["generated_data_folder"])
 
 """ Now we have the data ready, we can start calculating the interest rates.
 We will use the scaled data for the interest rate calculation.
@@ -111,7 +110,7 @@ def main():
     sys.path.append(os.path.abspath(data_dir))
 
     # Full path to the CSV file
-    file_path = os.path.join(data_dir, 'customers_data_for_queries.csv')
+    file_path = os.path.join(config["general_path"], config["paths_relative_to_general_path"]["customers_data_queries_csv"])
 
     # Load the customer data using the full path
     df = pd.read_csv(file_path)
