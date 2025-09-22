@@ -4,7 +4,8 @@ general_path: '/Users/bonjour/Documents/AI/Projects/GitHub/BankGame/'
 # These paths are relative to the general path defined above, so they don't need to be updated by the user
 paths_relative_to_general_path:
   customers_data_queries_csv: "Data_generator/Generated_data/customers_data_for_queries.csv"
-  customers_data_models_csv: "Data_generator/Generated_data/customers_data_for_models.csv" 
+  customers_data_models_csv: "Data_generator/Generated_data/customers_data_for_models.csv"
+  macro_data_csv: "Data_generator/Generated_data/macro_data.csv" 
   customers_data_for_queries_db: "Data_generator/SQL_queries/Data/customers_data_for_queries.db"
   combined_data_pd_ldg_ead_irb_csv: "Output_data/customer_PD_LGD_EAD_STA_IRB/customer_data_PD_LGD_EAD_IRB.csv"
   data_generator_folder: "Data_generator/"
