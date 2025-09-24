@@ -32,7 +32,7 @@ def generate_macro_data(number_of_years=10, random_seed=42):
     - random_seed: int, seed for reproducibility.
 
     Returns:
-    - pd.DataFrame with columns: year, unemployment_rate, inflation_rate, interest_rate, gdp_growth_rate
+    - pd.DataFrame with columns: year, inflation_rate, interest_rate, gdp_growth_rate
     """
 
     np.random.seed(random_seed)
@@ -49,10 +49,14 @@ def generate_macro_data(number_of_years=10, random_seed=42):
     ) + np.random.normal(loc=2.0, scale=1.0, size=number_of_years) # noise coming from normal distribution
     inflation_rate = np.clip(inflation_rate, 0.0, 10.0) # bound between 0% and 10%
 
-    # Interest rate: bounded, often right-skewed, use beta distribution scaled
-    interest_rate = np.clip(
-        np.random.beta(a=2, b=5, size=number_of_years) * 5.0, 0.0, 5.0
-    )
+    # Interest rate: it will create a randomized vector of interest rates finishing with the value config["initial_bank_values"]["reference_rate"]
+    # But the values should oscillate around config["initial_bank_values"]["reference_rate"]
+    last_year_rate = config["initial_bank_values"]["reference_rate"]
+    interest_rate = np.zeros(number_of_years)
+    for t in range(number_of_years - 1):
+        interest_rate[t] = last_year_rate + np.random.uniform(low=-0.01, high=0.01) # small random walk, 1% up or down
+    interest_rate[-1] = last_year_rate
+    interest_rate = np.clip(interest_rate, 0.0, 10.0) # bound between 0% and 10%
 
     # GDP growth rate: mean-reverting, can be negative, use normal but with AR(1) process
     gdp_growth_rate = np.zeros(number_of_years)
@@ -65,6 +69,7 @@ def generate_macro_data(number_of_years=10, random_seed=42):
 
     # Assemble DataFrame
     df = pd.DataFrame({
+        "year": np.arange(1, number_of_years + 1),
         "inflation_rate": inflation_rate,
         "interest_rate": interest_rate,
         "gdp_growth_rate": gdp_growth_rate
@@ -73,10 +78,73 @@ def generate_macro_data(number_of_years=10, random_seed=42):
     # Return the DataFrame
     return df
 
+def generate_unemployement_rate(number_of_years=10, random_seed=42):
+    
+    """
+    Here we generate the unemployement rate, but it will be different per working sector
+    The unemployement rate will be generated as a truncated normal distribution to avoid negative values
+    Parameters:
+    - number_of_years: int, number of years to generate data for.
+    - random_seed: int, seed for reproducibility.
+    Returns:
+    - pd.DataFrame with columns: year, unemployement_rate per working sector
+    """
+
+    np.random.seed(random_seed)
+
+    # Define sectors and credit types
+    working_sectors_low = config['working_sectors']['LowSkilled']['sectors']
+    working_sectors_medium = config['working_sectors']['MediumSkilled']['sectors']
+    working_sectors_high = config['working_sectors']['HighSkilled']['sectors']
+    credit_types = config['credit_characteristics']['types_of_loan']
+
+    # We want combination of all the items in working sectors and credit types, but as two columns
+    categories = []
+    for sector in working_sectors_low + working_sectors_medium + working_sectors_high:
+        categories.append(sector)
+
+    # Generate unemployment rates, but working sectors with low skill will tend to have higher volatility in unemployment rate
+    # This will be reflected in the standard deviation of the truncated normal distribution
+    data = []
+    for category in categories:
+        if category[0] in working_sectors_low:
+            std_dev = 2.0  # higher volatility for low-skilled sectors
+        elif category[0] in working_sectors_medium:
+            std_dev = 1.5
+        else:
+            std_dev = 1.0  # lower volatility for high-skilled sectors
+
+        # Truncated normal distribution parameters based on mean 6%, std_dev, truncated between 0% and 15%
+        unemployment_rate = truncnorm.rvs(
+            a=(0 - 6) / std_dev,  # truncate at 0
+            b=(15 - 6) / std_dev,  # truncate at 15
+            loc=6,  # mean
+            scale=std_dev,  # std dev
+            size=number_of_years
+        )
+        data.append({
+            "year": np.arange(1, number_of_years + 1),
+            "category": category,
+            "unemployment_rate": unemployment_rate
+        })
+
+    # Convert to DataFrame
+    df = pd.DataFrame(data)
+    df = df.explode(['year', 'unemployment_rate']).reset_index(drop=True)
+    df['year'] = df['year'].astype(int)
+    df['unemployment_rate'] = df['unemployment_rate'].astype(float)
+    df = df.pivot(index='year', columns='category', values='unemployment_rate').reset_index()
+    df.columns.name = None  # remove the categories name
+
+    # Return the DataFrame
+    return df
+
 # Example usage
 if __name__ == "__main__":
-    macro_data = generate_macro_data(number_of_years=10, random_seed=42)
+    macro_data = generate_macro_data(number_of_years=config['number_years_previous_game'], random_seed=42)
     print(macro_data)
+    unemployement_data = generate_unemployement_rate(number_of_years=config['number_years_previous_game'], random_seed=42)
+    print(unemployement_data)
     
     # # Save to CSV
     # location_path = config['paths_relative_to_general_path']['macro_data_csv']

@@ -39,6 +39,8 @@ initial_bank_values:
 
 # General parameters ---->
 
+number_years_previous_game: 5 # This is to generate the macroeconomic data for the previous years before the game
+
 number_of_customers_1: 1000
 
 # Parameters for variables generation ---->
