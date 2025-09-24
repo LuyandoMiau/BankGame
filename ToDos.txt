@@ -14,9 +14,10 @@ Still to do for this version:
 11. Consider estimation rules of PDs for Low Default Portfolios
 12. Calculate, apart from the EL, the Value at Risk (VaR), the Unexpected Loss (UL) and the Expected Shortfall (ES)
 13. Calculate the RW as per the STA (witha defined rule as per the ratings of the people), IRB (as per the formula from the EBA)
+14. Tie macro and customer data so that all of the data can be use for the modeling of the PDs, Interest Rates, LGDs, EADs and Capital Requirements
 
 
-WORKING ON: 6, 4
+WORKING ON: 6, 4, 14
 
 To-Dos for next version:
 1. create a user interface (GUI) using html or something else.
