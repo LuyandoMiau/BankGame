@@ -131,3 +131,6 @@ def update_working_sector(working_sector, period):
         new_working_sector = np.random.choice(transition_probs.index, p=transition_probs.values)
         return new_working_sector
     return working_sector
+
+
+# Note: Next functions will be using the same functions as in functions_customer_data_generator.py, but we will add an extra dynamic of transition matrices for the income and expenditure
