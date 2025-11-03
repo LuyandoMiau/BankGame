@@ -82,6 +82,10 @@ past_credits:
     - 0.08
     - 0.02
 
+# General probability that in one year the person will accumulate a not paid credit based on past credits
+past_credits_sensibility: 0.1
+
+
 # Dependents related
 dependents:
   levels:
@@ -97,6 +101,8 @@ dependents:
     - 0.03
     - 0.01
 
+# General probability that a person will have a new dependent 
+dependents_sensitivity: 0.1 
 
 ### ------- Data_generator/data_generator_functions.py
 
@@ -200,6 +206,8 @@ working_sectors:
       - 0.2
       - 0.2
       - 0.1
+
+# Transition probabilities for working sectors are modeled randomly in data_dynamics.py
 
 # Income related
 # Assuming unemployement money is 50% of the income of the employed in the same skill category
