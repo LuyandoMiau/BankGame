@@ -1,3 +1,6 @@
+"""We will now move to a more Object Oriented Programming that will allows to facility 
+the data generation and the data dynamics for several periods of time."""
+
 """ File with the functions to generate the data with the customer profiles."""
 from functions_customer_data_generator import generate_profession, generate_working_sector, generate_income_expense, generate_credit_requested, calculate_collateral, get_collateral_type, estimate_seizable_assets, generate_default_label
 
